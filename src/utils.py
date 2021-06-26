@@ -26,8 +26,57 @@ def send_youtube_video(reply_token, query):
   request = youtube.search().list(part='snippet', q=query, type='video')
   response = request.execute()
   # The video that is most relevant to the search query
-  firstVideo = response['items'][0]
-  videoId = firstVideo['id']['videoId']
-  videoUrl = f'https://www.youtube.com/watch?v={videoId}'
-  send_text_message(reply_token, videoUrl)
+  # firstVideo = response['items'][0]
+  Videos = response['items'][0:3]
+  # videoId = firstVideo['id']['videoId']
+  videoIds = [Videos[i]['id']['videoId'] for i in range(3)]
+  # videoUrl = f'https://www.youtube.com/watch?v={videoId}'
+  videoUrls = [f'https://www.youtube.com/watch?v={videoId}' for videoId in videoIds]
+  # send_text_message(reply_token, videoUrl)
+
+  # TODO: very messy (just for testing)
+  # print(Videos[0]['snippet']['title'])
+  # print(Videos[0]['snippet']['thumbnails']['high']['url'])
+
+  message = TemplateSendMessage(
+      alt_text='Carousel template',
+      template=CarouselTemplate(
+          columns=[
+              CarouselColumn(
+                  thumbnail_image_url=Videos[0]['snippet']['thumbnails']['high']['url'],
+                  title='Song 1',
+                  text=Videos[0]['snippet']['title'],
+                  actions=[
+                      MessageTemplateAction(
+                          label='聽這首',
+                          text=videoUrls[0]
+                      )
+                  ]
+              ),
+              CarouselColumn(
+                  thumbnail_image_url=Videos[1]['snippet']['thumbnails']['high']['url'],
+                  title='Song 2',
+                  text=Videos[1]['snippet']['title'],
+                  actions=[
+                      MessageTemplateAction(
+                          label='聽這首',
+                          text=videoUrls[1]
+                      )
+                  ]
+              ),
+              CarouselColumn(
+                  thumbnail_image_url=Videos[2]['snippet']['thumbnails']['high']['url'],
+                  title='Song 3',
+                  text=Videos[2]['snippet']['title'],
+                  actions=[
+                      MessageTemplateAction(
+                          label='聽這首',
+                          text=videoUrls[2]
+                      )
+                  ]
+              )
+          ]
+      )
+    )
+
   return "OK"
