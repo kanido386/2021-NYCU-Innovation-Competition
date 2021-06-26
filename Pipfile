@@ -8,6 +8,7 @@ line-bot-sdk = "*"
 flask = "*"
 python-dotenv = "*"
 transitions = "*"
+pygraphviz = "*"
 
 [dev-packages]
 
