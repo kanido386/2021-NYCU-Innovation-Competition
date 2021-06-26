@@ -79,4 +79,6 @@ def send_youtube_video(reply_token, query):
       )
     )
 
+  line_bot_api.push_message(reply_token, message)
+
   return "OK"
