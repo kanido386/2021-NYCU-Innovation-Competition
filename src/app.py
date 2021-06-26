@@ -5,9 +5,8 @@ from linebot import LineBotApi, WebhookParser
 from linebot.exceptions import InvalidSignatureError
 from linebot.models import MessageEvent, TextMessage, TextSendMessage
 
-# TODO:
 from utils import send_text_message
-# from machine import create_machine
+from machine import create_machine
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -20,9 +19,8 @@ channel_secret = os.getenv("LINE_CHANNEL_SECRET", None)
 line_bot_api = LineBotApi(channel_access_token)
 parser = WebhookParser(channel_secret)
 
-# TODO:
-# # Unique FSM for each user
-# machines = {}
+# Unique FSM for each user
+machines = {}
 
 @app.route("/webhook", methods=["POST"])
 def webhook_handler():
@@ -45,18 +43,19 @@ def webhook_handler():
     if not isinstance(event.message.text, str):
       continue
 
-    # TODO:
-    # # Create a machine for new user
-    # if event.source.user_id not in machines:
-    #   machines[event.source.user_id] = create_machine()
+    # Create a machine for new user
+    if event.source.user_id not in machines:
+      machines[event.source.user_id] = create_machine()
 
-    # TODO:
-    # # Advance the FSM for each MessageEvent
-    # response = machines[event.source.user_id].advance(event)
-    # if response == False:
-    #   send_text_message(event.reply_token, "Invalid command, try again")
+    # Advance the FSM for each MessageEvent
+    response = machines[event.source.user_id].advance(event)
+    if response == False:
+      # TODO: 使用者輸入沒設定的指令
+      # send_text_message(event.reply_token, "Invalid command, try again")
+      pass
 
-    send_text_message(event.reply_token, event.message.text)
+    # # Echoing
+    # send_text_message(event.reply_token, event.message.text)
 
   return "OK"
 
