@@ -43,9 +43,9 @@ def send_youtube_video(id, reply_token, query):
       template=CarouselTemplate(
           columns=[
               CarouselColumn(
-                  thumbnail_image_url=Videos[0]['snippet']['thumbnails']['high']['url'],
+                  thumbnail_image_url=Videos[0]['snippet']['thumbnails']['default']['url'],
                   title='Song 1',
-                  text=Videos[0]['snippet']['title'],
+                  text=Videos[0]['snippet']['title'][:60],
                   actions=[
                       MessageTemplateAction(
                           label='聽這首',
@@ -54,9 +54,9 @@ def send_youtube_video(id, reply_token, query):
                   ]
               ),
               CarouselColumn(
-                  thumbnail_image_url=Videos[1]['snippet']['thumbnails']['high']['url'],
+                  thumbnail_image_url=Videos[1]['snippet']['thumbnails']['default']['url'],
                   title='Song 2',
-                  text=Videos[1]['snippet']['title'],
+                  text=Videos[1]['snippet']['title'][:60],
                   actions=[
                       MessageTemplateAction(
                           label='聽這首',
@@ -65,9 +65,9 @@ def send_youtube_video(id, reply_token, query):
                   ]
               ),
               CarouselColumn(
-                  thumbnail_image_url=Videos[2]['snippet']['thumbnails']['high']['url'],
+                  thumbnail_image_url=Videos[2]['snippet']['thumbnails']['default']['url'],
                   title='Song 3',
-                  text=Videos[2]['snippet']['title'],
+                  text=Videos[2]['snippet']['title'][:60],
                   actions=[
                       MessageTemplateAction(
                           label='聽這首',
