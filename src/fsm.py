@@ -1,6 +1,6 @@
 from transitions.extensions import GraphMachine
 
-from utils import send_text_message
+from utils import send_text_message, send_youtube_video
 
 class TocMachine(GraphMachine):
   def __init__(self, **machine_configs):
@@ -17,6 +17,11 @@ class TocMachine(GraphMachine):
     return text.lower() == "go to state2"
 
 
+  def is_going_to_youtube(self, event):
+    text = event.message.text
+    return "聽" in text
+
+
   def on_enter_state1(self, event):
     print("I'm entering state1")
 
@@ -25,8 +30,8 @@ class TocMachine(GraphMachine):
     self.go_back()
 
 
-  def on_exit_state1(self):
-    print("Leaving state1")
+  # def on_exit_state1(self):
+  #   print("Leaving state1")
 
 
   def on_enter_state2(self, event):
@@ -37,5 +42,14 @@ class TocMachine(GraphMachine):
     self.go_back()
 
 
-  def on_exit_state2(self):
-    print("Leaving state2")
+  # def on_exit_state2(self):
+  #   print("Leaving state2")
+
+
+  def on_enter_youtube(self, event):
+    print("I'm entering youtube")
+
+    reply_token = event.reply_token
+    query = event.message.text
+    send_youtube_video(reply_token, query)
+    self.go_back()

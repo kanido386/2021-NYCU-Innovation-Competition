@@ -9,6 +9,7 @@ flask = "*"
 python-dotenv = "*"
 transitions = "*"
 pygraphviz = "*"
+google-api-python-client = "*"
 
 [dev-packages]
 
