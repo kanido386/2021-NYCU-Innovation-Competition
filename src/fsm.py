@@ -49,7 +49,8 @@ class TocMachine(GraphMachine):
   def on_enter_youtube(self, event):
     print("I'm entering youtube")
 
+    id = event.source.user_id
     reply_token = event.reply_token
     query = event.message.text
-    send_youtube_video(reply_token, query)
+    send_youtube_video(id, reply_token, query)
     self.go_back()

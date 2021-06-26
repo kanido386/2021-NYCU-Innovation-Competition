@@ -19,7 +19,7 @@ def send_text_message(reply_token, text):
   return "OK"
 
 
-def send_youtube_video(reply_token, query):
+def send_youtube_video(id, reply_token, query):
   youTubeApiKey = os.getenv("YOUTUBE_API_KEY", None)
   youtube = build('youtube', 'v3', developerKey=youTubeApiKey)
   query = query[2:]
@@ -79,6 +79,6 @@ def send_youtube_video(reply_token, query):
       )
     )
 
-  line_bot_api.push_message(reply_token, message)
+  line_bot_api.push_message(id, message)
 
   return "OK"
