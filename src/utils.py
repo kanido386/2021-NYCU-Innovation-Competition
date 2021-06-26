@@ -26,8 +26,14 @@ def send_youtube_video(reply_token, query):
   request = youtube.search().list(part='snippet', q=query, type='video')
   response = request.execute()
   # The video that is most relevant to the search query
-  firstVideo = response['items'][0]
+  firstVideo, secondVideo, thirdVideo = response['items'][0:3]
   videoId = firstVideo['id']['videoId']
+  videoUrl = f'https://www.youtube.com/watch?v={videoId}'
+  send_text_message(reply_token, videoUrl)
+  videoId = secondVideo['id']['videoId']
+  videoUrl = f'https://www.youtube.com/watch?v={videoId}'
+  send_text_message(reply_token, videoUrl)
+  videoId = thirdVideo['id']['videoId']
   videoUrl = f'https://www.youtube.com/watch?v={videoId}'
   send_text_message(reply_token, videoUrl)
   return "OK"
