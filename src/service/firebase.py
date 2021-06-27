@@ -16,13 +16,14 @@ bucket = storage.bucket()
 
 
 def write_message(user_id, message):
-  user_doc = db.collection('users').document(user_id)
-  user_doc.set({
+  user_doc_ref = db.collection('users').document(user_id)
+  user_doc_ref.set({
     'message': message
   })
 
 
 def read_message(user_id):
-  user_doc = db.collection('users').document(user_id)
+  user_doc_ref = db.collection('users').document(user_id)
+  user_doc = user_doc_ref.get().to_dict()
   message = user_doc['message']
   return message
