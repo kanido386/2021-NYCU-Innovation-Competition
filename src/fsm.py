@@ -11,6 +11,12 @@ class TocMachine(GraphMachine):
     self.machine = GraphMachine(model=self, **machine_configs)
 
 
+  # TODO: message type other than text should put forward
+  def is_going_to_image(self, event):
+    print(event)
+    return event.message.type == "image"
+  
+  
   def is_going_to_state1(self, event):
     text = event.message.text
     return text.lower() == "go to state1"
@@ -37,10 +43,6 @@ class TocMachine(GraphMachine):
   def is_going_to_read_message(self, event):
     text = event.message.text
     return text.lower() == "message"
-
-  def is_going_to_image(self, event):
-    print(event)
-    return event.message.type == "image"
 
 
   def on_enter_state1(self, event):
