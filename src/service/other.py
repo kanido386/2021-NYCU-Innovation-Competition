@@ -36,6 +36,7 @@ def send_youtube_video(id, reply_token, query):
   message = TemplateSendMessage(
       alt_text='Carousel template',
       template=CarouselTemplate(
+          # TODO: 可以改用 append 的方式
           columns=[
               CarouselColumn(
                   thumbnail_image_url=Videos[0]['snippet']['thumbnails']['high']['url'],

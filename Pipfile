@@ -10,6 +10,7 @@ python-dotenv = "*"
 transitions = "*"
 pygraphviz = "*"
 google-api-python-client = "*"
+firebase-admin = "*"
 
 [dev-packages]
 

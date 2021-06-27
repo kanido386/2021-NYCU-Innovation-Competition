@@ -4,6 +4,7 @@ from transitions.extensions import GraphMachine
 from service.basic import send_text_message
 from service.other import send_youtube_video
 from service.blockchain import users, service_tokens
+from service.firebase import write_message, read_message
 
 class TocMachine(GraphMachine):
   def __init__(self, **machine_configs):
@@ -28,6 +29,14 @@ class TocMachine(GraphMachine):
   def is_going_to_try_blockchain(self, event):
     text = event.message.text
     return "give me" in text
+
+  def is_going_to_write_message(self, event):
+    text = event.message.text
+    return "message" in text and len(text) > 7
+
+  def is_going_to_read_message(self, event):
+    text = event.message.text
+    return text.lower() == "message"
 
 
   def on_enter_state1(self, event):
@@ -65,7 +74,7 @@ class TocMachine(GraphMachine):
 
 
   def on_enter_try_blockchain(self, event):
-    print("I'm entering state2")
+    print("I'm entering try_blockchain")
 
     user_id = event.source.user_id
     reply_token = event.reply_token
@@ -73,4 +82,25 @@ class TocMachine(GraphMachine):
     user_wallet_address = users.retrieve.wallet_address(user_id)
     service_tokens.mint(user_wallet_address, amount)
     send_text_message(reply_token, f"恭喜獲得 {amount} 枚健康幣！")
+    self.go_back()
+
+
+  def on_enter_write_message(self, event):
+    print("I'm entering write_message")
+
+    user_id = event.source.user_id
+    message = event.message.text[8:]
+    write_message(user_id, message)
+    reply_token = event.reply_token
+    send_text_message(reply_token, "訊息存起來囉！")
+    self.go_back()
+
+
+  def on_enter_read_message(self, event):
+    print("I'm entering read_message")
+
+    user_id = event.source.user_id
+    message = read_message(user_id)
+    reply_token = event.reply_token
+    send_text_message(reply_token, f"這是剛剛存起來的訊息：\n\n{message}")
     self.go_back()
