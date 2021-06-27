@@ -15,7 +15,7 @@ class SignatureGenerator:
 
         return signTarget
 
-    def generate(self, method: str, path: str, nonce: str, timestamp: int, secret: str, query_params: dict = {}, body: dict = {}):
+    def generate(self, method: str, path: str, nonce: str, timestamp: int, service_api_secret: str, query_params: dict = {}, body: dict = {}):
         body_flattener = RequestBodyFlattener()
         all_parameters = {}
         all_parameters.update(query_params)
@@ -34,7 +34,7 @@ class SignatureGenerator:
             else:
                 signTarget += body_flattener.flatten(body)
 
-        raw_hmac = hmac.new(bytes(secret, 'utf-8'), bytes(signTarget, 'utf-8'), hashlib.sha512)
+        raw_hmac = hmac.new(bytes(service_api_secret, 'utf-8'), bytes(signTarget, 'utf-8'), hashlib.sha512)
         result = base64.b64encode(raw_hmac.digest()).decode('utf-8')
 
         return result
