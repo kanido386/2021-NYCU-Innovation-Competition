@@ -1,8 +1,9 @@
+from flask.scaffold import F
 from transitions.extensions import GraphMachine
 
 from service.basic import send_text_message
 from service.other import send_youtube_video
-import service.blockchain as blockchain
+from service.blockchain import users, service_tokens
 
 class TocMachine(GraphMachine):
   def __init__(self, **machine_configs):
@@ -69,7 +70,7 @@ class TocMachine(GraphMachine):
     user_id = event.source.user_id
     reply_token = event.reply_token
     amount = int(event.message.text[7:])
-    user_wallet_address = blockchain.users.retrieve.wallet_address(user_id)
-    blockchain.service_tokens.mint(user_wallet_address, amount)
+    user_wallet_address = users.retrieve.wallet_address(user_id)
+    service_tokens.mint(user_wallet_address, amount)
     send_text_message(reply_token, f"恭喜獲得 {amount} 枚健康幣！")
     self.go_back()
