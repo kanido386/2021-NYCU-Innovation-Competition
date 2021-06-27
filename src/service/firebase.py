@@ -28,9 +28,8 @@ line_bot_api = LineBotApi(access_token)
 
 def write_message(user_id, message):
   user_doc_ref = db.collection('users').document(user_id)
-  user_doc_ref.set({
-    'message': message
-  })
+  user_doc = user_doc_ref.get().to_dict()
+  user_doc['message'] = message
 
 
 def read_message(user_id):
@@ -56,9 +55,8 @@ def upload_image(user_id, message_id, file_name):
   os.remove(temp_file_path)
   
   user_doc_ref = db.collection('users').document(user_id)
-  user_doc_ref.set({
-    'image': saving_path
-  })
+  user_doc = user_doc_ref.get().to_dict()
+  user_doc['image'] = saving_path
 
 
 def send_image(user_id, reply_token):
