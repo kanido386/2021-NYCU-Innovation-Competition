@@ -4,7 +4,7 @@ from transitions.extensions import GraphMachine
 from service.basic import send_text_message
 from service.other import send_youtube_video
 from service.blockchain import users, service_tokens
-from service.firebase import write_message, read_message
+from service.firebase import write_message, read_message, upload_image, send_image
 
 class TocMachine(GraphMachine):
   def __init__(self, **machine_configs):
@@ -28,11 +28,11 @@ class TocMachine(GraphMachine):
 
   def is_going_to_try_blockchain(self, event):
     text = event.message.text
-    return "give me" in text
+    return "Give me" in text
 
   def is_going_to_write_message(self, event):
     text = event.message.text
-    return "message" in text and len(text) > 7
+    return "Message" in text and len(text) > 7
 
   def is_going_to_read_message(self, event):
     text = event.message.text
@@ -41,6 +41,11 @@ class TocMachine(GraphMachine):
   def is_going_to_image(self, event):
     print(event)
     return event.message.type == "image"
+
+  def is_going_to_see_image(self, event):
+    print(event)
+    text = event.message.text
+    return text.lower() == "see image"
 
 
   def on_enter_state1(self, event):
@@ -113,6 +118,21 @@ class TocMachine(GraphMachine):
   def on_enter_image(self, event):
     print("I'm entering image")
 
+    user_id = event.source.user_id
+    message_id = event.message.id
+    file_name = str(event.timestamp) + ".jpg"
+    upload_image(user_id, message_id, file_name)
+
     reply_token = event.reply_token
-    send_text_message(reply_token, "您已傳送了照片。")
+    send_text_message(reply_token, "照片已上傳。")
+    self.go_back()
+
+
+  def on_enter_see_image(self, event):
+    print("I'm entering see_image")
+
+    user_id = event.source.user_id
+    reply_token = event.reply_token
+    send_image(user_id, reply_token)
+    
     self.go_back()
