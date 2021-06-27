@@ -2,7 +2,7 @@ from transitions.extensions import GraphMachine
 
 from service.basic import send_text_message
 from service.other import send_youtube_video
-from service.blockchain import GET_v1_users_userId
+from service.blockchain import GET_v1_users_userId, POST_v1_service_tokens_contractId_mint
 
 class TocMachine(GraphMachine):
   def __init__(self, **machine_configs):
@@ -69,6 +69,9 @@ class TocMachine(GraphMachine):
     id = event.source.user_id
     reply_token = event.reply_token
     res = GET_v1_users_userId(id)
+    # print(res)
+    user_wallet_address = res['responseData']['walletAddress']
+    res = POST_v1_service_tokens_contractId_mint(user_wallet_address, )
     print(res)
     send_text_message(reply_token, "OK!")
     self.go_back()
