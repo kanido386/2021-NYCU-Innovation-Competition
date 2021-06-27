@@ -21,7 +21,7 @@ class SignatureGenerator:
         all_parameters.update(query_params)
         all_parameters.update(body)
 
-        self.__logger.debug("query_params: " + str(query_params))
+        # self.__logger.debug("query_params: " + str(query_params))
 
         signTarget = self.__createSignTarget(method.upper(), path, timestamp, nonce, all_parameters)
 
