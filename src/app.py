@@ -5,7 +5,7 @@ from linebot import LineBotApi, WebhookParser
 from linebot.exceptions import InvalidSignatureError
 from linebot.models import MessageEvent, TextMessage, TextSendMessage
 
-from utils.basic import send_text_message
+from service.basic import send_text_message
 from machine import create_machine
 from dotenv import load_dotenv
 
