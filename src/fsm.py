@@ -1,6 +1,7 @@
 from transitions.extensions import GraphMachine
 
-from utils import send_text_message, send_youtube_video
+from utils.basic import send_text_message, send_youtube_video
+from utils.other import send_youtube_video
 
 class TocMachine(GraphMachine):
   def __init__(self, **machine_configs):
