@@ -39,6 +39,7 @@ class TocMachine(GraphMachine):
     return text.lower() == "message"
 
   def is_going_to_image(self, event):
+    print(event)
     return event.message.type == "image"
 
 
