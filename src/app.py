@@ -38,10 +38,11 @@ def webhook_handler():
   for event in events:
     if not isinstance(event, MessageEvent):
       continue
-    if not isinstance(event.message, TextMessage):
-      continue
-    if not isinstance(event.message.text, str):
-      continue
+    # TODO:
+    # if not isinstance(event.message, TextMessage):
+    #   continue
+    # if not isinstance(event.message.text, str):
+    #   continue
 
     # Create a machine for new user
     if event.source.user_id not in machines:
