@@ -5,7 +5,7 @@ from linebot import LineBotApi, WebhookParser
 from linebot.exceptions import InvalidSignatureError
 from linebot.models import MessageEvent, TextMessage, TextSendMessage
 
-from utils import send_text_message
+from service.basic import send_text_message
 from machine import create_machine
 from dotenv import load_dotenv
 
@@ -38,10 +38,11 @@ def webhook_handler():
   for event in events:
     if not isinstance(event, MessageEvent):
       continue
-    if not isinstance(event.message, TextMessage):
-      continue
-    if not isinstance(event.message.text, str):
-      continue
+    # TODO:
+    # if not isinstance(event.message, TextMessage):
+    #   continue
+    # if not isinstance(event.message.text, str):
+    #   continue
 
     # Create a machine for new user
     if event.source.user_id not in machines:
@@ -53,6 +54,8 @@ def webhook_handler():
       # TODO: 使用者輸入沒設定的指令
       # send_text_message(event.reply_token, "Invalid command, try again")
       pass
+
+    print(event)
 
     # # Echoing
     # send_text_message(event.reply_token, event.message.text)

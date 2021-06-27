@@ -2,8 +2,23 @@ from fsm import TocMachine
 
 def create_machine():
   machine = TocMachine(
-    states=["user", "state1", "state2", "youtube"],
+    # TODO: 用 append 的方式來添加
+    states=["user", "see_image", "state1", "state2", "youtube", "try_blockchain", "write_message", "read_message", "image"],
+    # TODO: 用 append 的方式來添加
+    # TODO: message type other than text should put forward
     transitions=[
+      {
+          "trigger": "advance",
+          "source": "user",
+          "dest": "image",
+          "conditions": "is_going_to_image",
+      },
+      {
+          "trigger": "advance",
+          "source": "user",
+          "dest": "see_image",
+          "conditions": "is_going_to_see_image",
+      },
       {
           "trigger": "advance",
           "source": "user",
@@ -22,7 +37,27 @@ def create_machine():
           "dest": "youtube",
           "conditions": "is_going_to_youtube",
       },
-      {"trigger": "go_back", "source": ["state1", "state2", "youtube"], "dest": "user"},
+      {
+          "trigger": "advance",
+          "source": "user",
+          "dest": "try_blockchain",
+          "conditions": "is_going_to_try_blockchain",
+      },
+      {
+          "trigger": "advance",
+          "source": "user",
+          "dest": "write_message",
+          "conditions": "is_going_to_write_message",
+      },
+      {
+          "trigger": "advance",
+          "source": "user",
+          "dest": "read_message",
+          "conditions": "is_going_to_read_message",
+      },
+      # TODO: 用 append 的方式來添加
+      # TODO: message type other than text should put forward
+      {"trigger": "go_back", "source": ["see_image", "state1", "state2", "youtube", "try_blockchain", "write_message", "read_message", "image"], "dest": "user"},
     ],
     initial="user",
     auto_transitions=False,
