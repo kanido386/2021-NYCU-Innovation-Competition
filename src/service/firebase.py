@@ -30,6 +30,7 @@ def write_message(user_id, message):
   user_doc_ref = db.collection('users').document(user_id)
   user_doc = user_doc_ref.get().to_dict()
   user_doc['message'] = message
+  user_doc_ref.set(user_doc)
 
 
 def read_message(user_id):
@@ -57,6 +58,7 @@ def upload_image(user_id, message_id, file_name):
   user_doc_ref = db.collection('users').document(user_id)
   user_doc = user_doc_ref.get().to_dict()
   user_doc['image'] = saving_path
+  user_doc_ref.set(user_doc)
 
 
 def send_image(user_id, reply_token):
