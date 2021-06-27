@@ -71,7 +71,7 @@ class TocMachine(GraphMachine):
     res = GET_v1_users_userId(id)
     # print(res)
     user_wallet_address = res['responseData']['walletAddress']
-    res = POST_v1_service_tokens_contractId_mint(user_wallet_address, )
+    res = POST_v1_service_tokens_contractId_mint(user_wallet_address, 1)
     print(res)
     send_text_message(reply_token, "OK!")
     self.go_back()
