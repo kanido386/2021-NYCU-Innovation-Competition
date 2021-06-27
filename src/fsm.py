@@ -38,6 +38,9 @@ class TocMachine(GraphMachine):
     text = event.message.text
     return text.lower() == "message"
 
+  def is_going_to_image(self, event):
+    return event.message.type == "image"
+
 
   def on_enter_state1(self, event):
     print("I'm entering state1")
@@ -103,4 +106,12 @@ class TocMachine(GraphMachine):
     message = read_message(user_id)
     reply_token = event.reply_token
     send_text_message(reply_token, f"這是剛剛存起來的訊息：\n\n{message}")
+    self.go_back()
+
+
+  def on_enter_image(self, event):
+    print("I'm entering image")
+
+    reply_token = event.reply_token
+    send_text_message(reply_token, "您已傳送了照片。")
     self.go_back()

@@ -3,7 +3,7 @@ from fsm import TocMachine
 def create_machine():
   machine = TocMachine(
     # TODO: 用 append 的方式來添加
-    states=["user", "state1", "state2", "youtube", "try_blockchain", "write_message", "read_message"],
+    states=["user", "state1", "state2", "youtube", "try_blockchain", "write_message", "read_message", "image"],
     # TODO: 用 append 的方式來添加
     transitions=[
       {
@@ -42,8 +42,14 @@ def create_machine():
           "dest": "read_message",
           "conditions": "is_going_to_read_message",
       },
+      {
+          "trigger": "advance",
+          "source": "user",
+          "dest": "image",
+          "conditions": "is_going_to_image",
+      },
       # TODO: 用 append 的方式來添加
-      {"trigger": "go_back", "source": ["state1", "state2", "youtube", "try_blockchain", "write_message", "read_message"], "dest": "user"},
+      {"trigger": "go_back", "source": ["state1", "state2", "youtube", "try_blockchain", "write_message", "read_message", "image"], "dest": "user"},
     ],
     initial="user",
     auto_transitions=False,
