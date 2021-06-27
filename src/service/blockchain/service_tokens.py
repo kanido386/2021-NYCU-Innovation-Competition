@@ -10,33 +10,11 @@ signatureGenerator = SignatureGenerator()
 get_signature = signatureGenerator.generate
 
 
-def GET_v1_users_userId(userId):
-    server_url = os.environ['SERVER_URL']
-    service_api_key = os.environ['SERVICE_API_KEY']
-    service_api_secret = os.environ['SERVICE_API_SECRET']
 
-    nonce = ''.join(random.choice(string.ascii_uppercase + string.ascii_lowercase + string.digits) for _ in range(8))
-    timestamp = int(round(time.time() * 1000))
-
-
-    path = f'/v1/users/{userId}'
-
-    headers = {
-        'service-api-key': service_api_key,
-        'nonce': nonce,
-        'timestamp': str(timestamp)
-    }
-
-
-    signature = get_signature('GET', path, nonce, timestamp, service_api_secret)
-    headers['signature'] = signature
-
-    res = requests.get(server_url + path, headers=headers)
-    return res.json()
-
-
-
-def POST_v1_service_tokens_contractId_mint(user_wallet_address, amount):
+# # Mint a service token
+# Request to mint the given service token and transfer it to the given wallet.
+# https://docs-blockchain.line.biz/api-guide/category-service-tokens?id=v1-service-tokens-contractid-mint-post
+def mint(user_wallet_address, amount):
     server_url = os.environ['SERVER_URL']
     service_api_key = os.environ['SERVICE_API_KEY']
     service_api_secret = os.environ['SERVICE_API_SECRET']
