@@ -54,6 +54,8 @@ def webhook_handler():
       # send_text_message(event.reply_token, "Invalid command, try again")
       pass
 
+    print(event)
+
     # # Echoing
     # send_text_message(event.reply_token, event.message.text)
 
