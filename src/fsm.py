@@ -69,5 +69,6 @@ class TocMachine(GraphMachine):
     id = event.source.user_id
     reply_token = event.reply_token
     res = GET_v1_users_userId(id)
-    send_text_message(reply_token, res)
+    print(res)
+    send_text_message(reply_token, "OK!")
     self.go_back()
