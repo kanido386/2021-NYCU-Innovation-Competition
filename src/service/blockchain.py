@@ -6,7 +6,8 @@ import string
 import time
 
 from .utils.signature_generator import SignatureGenerator
-get_signature = SignatureGenerator.generate
+signatureGenerator = SignatureGenerator()
+get_signature = signatureGenerator.generate
 
 
 def GET_v1_users_userId(userId):
