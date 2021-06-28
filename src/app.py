@@ -95,6 +95,6 @@ def webhook_handler():
 if __name__ == "__main__":
   port = os.environ.get("PORT", 8000)
   # https://stackoverflow.com/questions/55436443/how-to-thread-a-flask-app-and-function-with-a-while-loop-to-run-simultaneously
-  Process(target=app.run, kwargs=dict(host='0.0.0.0', port=port)).start()
-  Process(target=loop_notify_users).start()
-  # app.run(host="0.0.0.0", port=port)
+  # Process(target=app.run, kwargs=dict(host='0.0.0.0', port=port)).start()
+  # Process(target=loop_notify_users).start()
+  app.run(host="0.0.0.0", port=port)
