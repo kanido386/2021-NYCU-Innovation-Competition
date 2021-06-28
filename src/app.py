@@ -33,7 +33,11 @@ print('==============================')
 # https://developers.line.biz/en/reference/messaging-api/#send-push-message
 now = datetime.datetime.now()
 for user_id in user_list:
-  if now.hour == 13:
+  print(now.hour)
+  print(now.hour == 13)
+  print(type(now.hour))
+  if True:
+  # if now.hour == 13:
     try:
       print('I\'m here!')
       print('==============================')
