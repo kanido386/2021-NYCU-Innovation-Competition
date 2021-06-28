@@ -26,11 +26,14 @@ machines = {}
 
 
 user_list = get_user_list()
+print('==============================')
+print(user_list)
+print('==============================')
 # Send push message
 # https://developers.line.biz/en/reference/messaging-api/#send-push-message
 now = datetime.datetime.now()
 for user_id in user_list:
-  if now.hour == 13 and now.minute == 1:
+  if now.hour == 13 and now.minute == 6:
     try:
       line_bot_api.push_message(user_id, TextSendMessage(text='Hello World!'))
     except LineBotApiError as e:
