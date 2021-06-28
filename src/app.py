@@ -27,26 +27,27 @@ machines = {}
 
 
 def loop_notify_users():
-  user_list = get_user_list()
-  print('==============================')
-  print(user_list)
-  print('==============================')
-  # Send push message
-  # https://developers.line.biz/en/reference/messaging-api/#send-push-message
-  now = datetime.datetime.now()
-  for user_id in user_list:
-    # 原來是時區的問題⋯⋯（13 -> 5）
-    # print(now.hour)
-    # print(now.hour == 13)
-    # print(type(now.hour))
-    if now.hour+8 == 13 and now.second%10 == 0:
-      try:
-        print('I\'m here!')
-        print('==============================')
-        line_bot_api.push_message(user_id, TextSendMessage(text='Hello World!'))
-        print('==============================')
-      except LineBotApiError as e:
-        print(e)
+  while True:
+    user_list = get_user_list()
+    print('==============================')
+    print(user_list)
+    print('==============================')
+    # Send push message
+    # https://developers.line.biz/en/reference/messaging-api/#send-push-message
+    now = datetime.datetime.now()
+    for user_id in user_list:
+      # 原來是時區的問題⋯⋯（13 -> 5）
+      # print(now.hour)
+      # print(now.hour == 13)
+      # print(type(now.hour))
+      if now.hour+8 == 13 and now.second%10 == 0:
+        try:
+          print('I\'m here!')
+          print('==============================')
+          line_bot_api.push_message(user_id, TextSendMessage(text='Hello World!'))
+          print('==============================')
+        except LineBotApiError as e:
+          print(e)
 
 
 @app.route("/webhook", methods=["POST"])
@@ -75,7 +76,6 @@ def webhook_handler():
     user_id = event.source.user_id
     if user_id not in machines:
       machines[user_id] = create_machine()
-      user_list.append(user_id)
 
     # Advance the FSM for each MessageEvent
     response = machines[event.source.user_id].advance(event)
