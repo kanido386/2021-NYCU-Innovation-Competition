@@ -43,7 +43,7 @@ def webhook_handler():
   # https://developers.line.biz/en/reference/messaging-api/#send-push-message
   now = datetime.datetime.now()
   for user_id in user_list:
-    if now.hour == 12 and now.minute == 45:
+    if now.hour == 12 and now.minute == 52:
       try:
         line_bot_api.push_message(user_id, TextSendMessage(text='Hello World!'))
       except LineBotApiError as e:
