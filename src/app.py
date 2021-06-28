@@ -1,5 +1,6 @@
 import os
 import datetime
+from multiprocessing import Process
 
 from flask import Flask, request, abort
 from linebot import LineBotApi, WebhookParser
@@ -25,26 +26,27 @@ parser = WebhookParser(channel_secret)
 machines = {}
 
 
-user_list = get_user_list()
-print('==============================')
-print(user_list)
-print('==============================')
-# Send push message
-# https://developers.line.biz/en/reference/messaging-api/#send-push-message
-now = datetime.datetime.now()
-for user_id in user_list:
-  print(now.hour)
-  print(now.hour == 13)
-  print(type(now.hour))
-  if True:
-  # if now.hour == 13:
-    try:
-      print('I\'m here!')
-      print('==============================')
-      line_bot_api.push_message(user_id, TextSendMessage(text='Hello World!'))
-      print('==============================')
-    except LineBotApiError as e:
-      print(e)
+def loop_notify_users():
+  user_list = get_user_list()
+  print('==============================')
+  print(user_list)
+  print('==============================')
+  # Send push message
+  # https://developers.line.biz/en/reference/messaging-api/#send-push-message
+  now = datetime.datetime.now()
+  for user_id in user_list:
+    # 原來是時區的問題⋯⋯（13 -> 5）
+    # print(now.hour)
+    # print(now.hour == 13)
+    # print(type(now.hour))
+    if now.hour+8 == 13 and now.second%10 == 0:
+      try:
+        print('I\'m here!')
+        print('==============================')
+        line_bot_api.push_message(user_id, TextSendMessage(text='Hello World!'))
+        print('==============================')
+      except LineBotApiError as e:
+        print(e)
 
 
 @app.route("/webhook", methods=["POST"])
@@ -92,4 +94,7 @@ def webhook_handler():
 
 if __name__ == "__main__":
   port = os.environ.get("PORT", 8000)
-  app.run(host="0.0.0.0", port=port)
+  # https://stackoverflow.com/questions/55436443/how-to-thread-a-flask-app-and-function-with-a-while-loop-to-run-simultaneously
+  Process(target=app.run, kwargs=dict(host='0.0.0.0', port=port)).start()
+  Process(target=loop_notify_users).start()
+  # app.run(host="0.0.0.0", port=port)
