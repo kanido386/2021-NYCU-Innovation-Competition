@@ -1,8 +1,9 @@
 import os
+import datetime
 
 from flask import Flask, request, abort
 from linebot import LineBotApi, WebhookParser
-from linebot.exceptions import InvalidSignatureError
+from linebot.exceptions import InvalidSignatureError, LineBotApiError
 from linebot.models import MessageEvent, TextMessage, TextSendMessage
 
 from service.basic import send_text_message
@@ -21,6 +22,19 @@ parser = WebhookParser(channel_secret)
 
 # Unique FSM for each user
 machines = {}
+user_list = []
+
+
+# Send push message
+# https://developers.line.biz/en/reference/messaging-api/#send-push-message
+now = datetime.datetime.now()
+for user_id in user_list:
+  if now.hour == 12 and now.minute == 45:
+    try:
+      line_bot_api.push_message(user_id, TextSendMessage(text='Hello World!'))
+    except LineBotApiError as e:
+      print(e)
+
 
 @app.route("/webhook", methods=["POST"])
 def webhook_handler():
@@ -45,8 +59,10 @@ def webhook_handler():
     #   continue
 
     # Create a machine for new user
-    if event.source.user_id not in machines:
-      machines[event.source.user_id] = create_machine()
+    user_id = event.source.user_id
+    if user_id not in machines:
+      machines[user_id] = create_machine()
+      user_list.append(user_id)
 
     # Advance the FSM for each MessageEvent
     response = machines[event.source.user_id].advance(event)
