@@ -69,3 +69,13 @@ def send_image(user_id, reply_token):
   # generate url for img
   img_url = blob.generate_signed_url(datetime.timedelta(seconds=300), method='GET')
   send_image_url(reply_token, img_url)
+
+
+def get_user_list():
+  # Get all documents in a collection
+  # https://firebase.google.com/docs/firestore/query-data/get-data?authuser=0#get_all_documents_in_a_collection
+  user_list = []
+  docs = db.collection('users').stream()
+  for doc in docs:
+    user_list.append(doc.id)
+  return user_list
