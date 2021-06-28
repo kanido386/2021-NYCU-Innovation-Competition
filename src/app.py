@@ -31,23 +31,13 @@ def loop_notify_users():
   while True:
     time.sleep(10)
     user_list = get_user_list()
-    print('==============================')
-    print(user_list)
-    print('==============================')
     # Send push message
     # https://developers.line.biz/en/reference/messaging-api/#send-push-message
     now = datetime.datetime.now()
     for user_id in user_list:
-      # 原來是時區的問題⋯⋯（13 -> 5）
-      # print(now.hour)
-      # print(now.hour == 13)
-      # print(type(now.hour))
-      if now.hour+8 == 13:
+      if now.hour+8 == 13:  # 因為時區的關係，所以要+8
         try:
-          print('I\'m here!')
-          print('==============================')
           line_bot_api.push_message(user_id, TextSendMessage(text='Hello World!'))
-          print('==============================')
         except LineBotApiError as e:
           print(e)
 
@@ -97,6 +87,6 @@ def webhook_handler():
 if __name__ == "__main__":
   port = os.environ.get("PORT", 8000)
   # https://stackoverflow.com/questions/55436443/how-to-thread-a-flask-app-and-function-with-a-while-loop-to-run-simultaneously
-  Process(target=app.run, kwargs=dict(host='0.0.0.0', port=port)).start()
-  Process(target=loop_notify_users).start()
-  # app.run(host="0.0.0.0", port=port)
+  # Process(target=app.run, kwargs=dict(host='0.0.0.0', port=port)).start()
+  # Process(target=loop_notify_users).start()
+  app.run(host="0.0.0.0", port=port)
