@@ -1,11 +1,15 @@
 import os
+import datetime
+import time
+from multiprocessing import Process
 
 from flask import Flask, request, abort
 from linebot import LineBotApi, WebhookParser
-from linebot.exceptions import InvalidSignatureError
+from linebot.exceptions import InvalidSignatureError, LineBotApiError
 from linebot.models import MessageEvent, TextMessage, TextSendMessage
 
 from service.basic import send_text_message
+from service.firebase import get_user_list
 from machine import create_machine
 from dotenv import load_dotenv
 
@@ -21,6 +25,22 @@ parser = WebhookParser(channel_secret)
 
 # Unique FSM for each user
 machines = {}
+
+
+def loop_notify_users():
+  while True:
+    time.sleep(10)
+    user_list = get_user_list()
+    # Send push message
+    # https://developers.line.biz/en/reference/messaging-api/#send-push-message
+    now = datetime.datetime.now()
+    for user_id in user_list:
+      if now.hour+8 == 13:  # 因為時區的關係，所以要+8
+        try:
+          line_bot_api.push_message(user_id, TextSendMessage(text='Hello World!'))
+        except LineBotApiError as e:
+          print(e)
+
 
 @app.route("/webhook", methods=["POST"])
 def webhook_handler():
@@ -45,8 +65,9 @@ def webhook_handler():
     #   continue
 
     # Create a machine for new user
-    if event.source.user_id not in machines:
-      machines[event.source.user_id] = create_machine()
+    user_id = event.source.user_id
+    if user_id not in machines:
+      machines[user_id] = create_machine()
 
     # Advance the FSM for each MessageEvent
     response = machines[event.source.user_id].advance(event)
@@ -65,4 +86,7 @@ def webhook_handler():
 
 if __name__ == "__main__":
   port = os.environ.get("PORT", 8000)
+  # https://stackoverflow.com/questions/55436443/how-to-thread-a-flask-app-and-function-with-a-while-loop-to-run-simultaneously
+  # Process(target=app.run, kwargs=dict(host='0.0.0.0', port=port)).start()
+  # Process(target=loop_notify_users).start()
   app.run(host="0.0.0.0", port=port)
