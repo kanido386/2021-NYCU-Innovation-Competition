@@ -25,17 +25,6 @@ machines = {}
 user_list = []
 
 
-# Send push message
-# https://developers.line.biz/en/reference/messaging-api/#send-push-message
-now = datetime.datetime.now()
-for user_id in user_list:
-  if now.hour == 12 and now.minute == 45:
-    try:
-      line_bot_api.push_message(user_id, TextSendMessage(text='Hello World!'))
-    except LineBotApiError as e:
-      print(e)
-
-
 @app.route("/webhook", methods=["POST"])
 def webhook_handler():
   signature = request.headers["X-Line-Signature"]
@@ -48,6 +37,18 @@ def webhook_handler():
     events = parser.parse(body, signature)
   except InvalidSignatureError:
     abort(400)
+
+
+  # Send push message
+  # https://developers.line.biz/en/reference/messaging-api/#send-push-message
+  now = datetime.datetime.now()
+  for user_id in user_list:
+    if now.hour == 12 and now.minute == 45:
+      try:
+        line_bot_api.push_message(user_id, TextSendMessage(text='Hello World!'))
+      except LineBotApiError as e:
+        print(e)
+
 
   for event in events:
     if not isinstance(event, MessageEvent):
