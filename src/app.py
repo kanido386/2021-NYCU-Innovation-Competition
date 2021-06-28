@@ -33,9 +33,12 @@ print('==============================')
 # https://developers.line.biz/en/reference/messaging-api/#send-push-message
 now = datetime.datetime.now()
 for user_id in user_list:
-  if now.hour == 13 and now.minute == 6:
+  if now.hour == 13:
     try:
+      print('I\'m here!')
+      print('==============================')
       line_bot_api.push_message(user_id, TextSendMessage(text='Hello World!'))
+      print('==============================')
     except LineBotApiError as e:
       print(e)
 
