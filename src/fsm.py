@@ -60,6 +60,17 @@ class TocMachine(GraphMachine):
 
   def is_going_to_exercise_done(self, event):
     return True
+
+
+  def is_going_to_sleeping(self, event):
+    text = event.message.text
+    return text.lower() == "record sleeping"
+
+  def is_going_to_sleeping_up(self, event):
+    return True
+
+  def is_going_to_sleeping_done(self, event):
+    return True
   
   
   # def is_going_to_state1(self, event):
@@ -242,6 +253,33 @@ class TocMachine(GraphMachine):
     # TODO: 獲得健康幣
     amount = 5
     send_text_message(reply_token, f'運動身體好，送您 {amount} 枚健康幣～')
+    self.go_back(event)
+
+
+
+  def on_enter_sleeping(self, event):
+    print("I'm entering sleeping")
+
+    reply_token = event.reply_token
+    send_text_message(reply_token, "昨晚幾點睡呢？")
+
+
+  def on_enter_sleeping_up(self, event):
+    print("I'm entering sleeping_up")
+
+    reply_token = event.reply_token
+    # TODO: 存資料庫
+    send_text_message(reply_token, "今天幾點幾床？")
+
+  
+  def on_enter_sleeping_done(self, event):
+    print("I'm entering sleeping_done")
+
+    reply_token = event.reply_token
+    # TODO: 存資料庫
+    hour = 7
+    minute = 30
+    send_text_message(reply_token, f'您一共睡了 {hour} 小時 {minute} 分鐘。\n記得，睡眠也很重要哦！')
     self.go_back(event)
 
   # def on_enter_state1(self, event):

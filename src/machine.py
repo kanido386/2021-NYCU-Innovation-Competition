@@ -1,3 +1,4 @@
+from time import sleep
 from fsm import TocMachine
 
 def create_machine():
@@ -6,7 +7,8 @@ def create_machine():
   meal = ["meal", "meal_search", "meal_report", "meal_input", "meal_reward"]
   diary = ["diary", "diary_done"]
   exercise = ["exercise", "exercise_done"]
-  category = [mood, meal, diary, exercise]
+  sleeping = ["sleeping", "sleeping_up", "sleeping_done"]
+  category = [mood, meal, diary, exercise, sleeping]
   for item in category:
     states.extend(item)
   machine = TocMachine(
@@ -33,6 +35,10 @@ def create_machine():
       # exercise
       { "trigger": "advance", "source": "user", "dest": "exercise", "conditions": "is_going_to_exercise" },
       { "trigger": "advance", "source": "exercise", "dest": "exercise_done", "conditions": "is_going_to_exercise_done" },
+      # sleeping
+      { "trigger": "advance", "source": "user", "dest": "sleeping", "conditions": "is_going_to_sleeping" },
+      { "trigger": "advance", "source": "sleeping", "dest": "sleeping_up", "conditions": "is_going_to_sleeping_up" },
+      { "trigger": "advance", "source": "sleeping_up", "dest": "sleeping_done", "conditions": "is_going_to_sleeping_done" },
       # {
       #     "trigger": "advance",
       #     "source": "user",
@@ -84,7 +90,7 @@ def create_machine():
       # TODO: 用 append 的方式來添加
       # TODO: message type other than text should put forward
       {"trigger": "go_back", "source": ["menu"], "dest": "user"},
-      {"trigger": "go_back", "source": ["exercise_done", "diary_done", "mood_done", "meal_report", "meal_reward"], "dest": "menu"},
+      {"trigger": "go_back", "source": ["sleeping_done", "exercise_done", "diary_done", "mood_done", "meal_report", "meal_reward"], "dest": "menu"},
       {"trigger": "go_back", "source": ["mood_detailed"], "dest": "mood"},
       # {"trigger": "go_back", "source": ["menu", "see_image", "state1", "state2", "youtube", "try_blockchain", "write_message", "read_message", "image"], "dest": "user"},
     ],
