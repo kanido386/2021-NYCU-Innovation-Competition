@@ -22,11 +22,27 @@ class TocMachine(GraphMachine):
     text = event.message.text
     return text.lower() == "share mood"
 
-  
   def is_going_to_mood_detailed(self, event):
     return True
 
   def is_going_to_mood_done(self, event):
+    return True
+
+
+  def is_going_to_meal(self, event):
+    text = event.message.text
+    return text.lower() == "record meal"
+
+  def is_going_to_meal_search(self, event):
+    return True
+
+  def is_going_to_meal_report(self, event):
+    return True
+
+  def is_going_to_meal_input(self, event):
+    return True
+
+  def is_going_to_meal_reward(self, event):
     return True
   
   
@@ -72,6 +88,7 @@ class TocMachine(GraphMachine):
     print("I'm entering menu")
 
     user_id = event.source.user_id
+    time.sleep(3)
     send_menu(user_id)
     self.go_back()
 
@@ -100,6 +117,7 @@ class TocMachine(GraphMachine):
       # TODO: would have bug
       self.go_back(event)
 
+    # TODO: 存心情分數
     if score >= 1 and score <= 5:
       # save_to_db(user_id, 'mood', {today: score}, 'dict')
       # value = load_from_db(user_id, 'mood')
@@ -120,8 +138,53 @@ class TocMachine(GraphMachine):
     print("I'm entering mood_done")
 
     reply_token = event.reply_token
+    # TODO: 存詳細＆獲得健康幣
     send_text_message(reply_token, "了解了！")
-    time.sleep(3)
+    self.go_back(event)
+
+
+
+  def on_enter_meal(self, event):
+    print("I'm entering meal")
+
+    reply_token = event.reply_token
+    send_text_message(reply_token, "請輸入食物名稱")
+
+
+  def on_enter_meal_search(self, event):
+    print("I'm entering meal_search")
+
+    text = event.message.text
+    # TODO: 從食物資料庫裡面找食物
+    if text == 'yes':
+      self.yes(event)
+    else:
+      self.no(event)
+
+  def on_enter_meal_report(self, event):
+    print("I'm entering meal_report")
+
+    reply_token = event.reply_token
+    # TODO: 回報卡路里
+    calories = 100
+    send_text_message(reply_token, f'食物熱量 {calories} 大卡')
+    self.go_back(event)
+
+
+  def on_enter_meal_input(self, event):
+    print("I'm entering meal_input")
+
+    reply_token = event.reply_token
+    send_text_message(reply_token, "請您輸入食物相關資訊")
+
+
+  def on_enter_meal_reward(self, event):
+    print("I'm entering meal_reward")
+
+    reply_token = event.reply_token
+    # TODO: 獲得健康幣
+    amount = 5
+    send_text_message(reply_token, f'感謝您的回饋，送您 {amount} 枚健康幣～')
     self.go_back(event)
 
   # def on_enter_state1(self, event):
