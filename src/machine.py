@@ -10,7 +10,7 @@ def create_machine():
   skin = ["skin", "skin_process", "skin_done"]
   report = ["report"]
   entertainment = ["entertainment"]
-  youtube = ["youtube", "youtube_ing", "youtube_done"]
+  youtube = ["youtube", "youtube_send", "youtube_ing", "youtube_done"]
   category = [mood, meal, diary, exercise, sleeping, skin, report, entertainment, youtube]
   for item in category:
     states.extend(item)
@@ -53,8 +53,10 @@ def create_machine():
       { "trigger": "advance", "source": "entertainment", "dest": "menu", "conditions": "is_going_to_exit" },
       # youtube
       { "trigger": "advance", "source": "entertainment", "dest": "youtube", "conditions": "is_going_to_youtube" },
-      { "trigger": "advance", "source": "youtube", "dest": "youtube_ing", "conditions": "is_going_to_youtube_ing" },
-      { "trigger": "advance", "source": "youtube", "dest": "youtube_done", "conditions": "is_going_to_youtube_done" },
+      { "trigger": "advance", "source": "youtube", "dest": "youtube_send" },
+      { "trigger": "advance", "source": "youtube_send", "dest": "youtube_ing", "conditions": "is_going_to_youtube_ing" },
+      { "trigger": "advance", "source": "youtube_ing", "dest": "youtube_ing", "conditions": "is_going_to_youtube_ing" },
+      { "trigger": "advance", "source": "youtube_ing", "dest": "youtube_done", "conditions": "is_going_to_youtube_done" },
       # {
       #     "trigger": "advance",
       #     "source": "user",
@@ -102,7 +104,6 @@ def create_machine():
       {"trigger": "go_back", "source": ["menu"], "dest": "user"},
       {"trigger": "go_back", "source": ["report", "skin_done", "sleeping_done", "exercise_done", "diary_done", "mood_done", "meal_report", "meal_reward"], "dest": "menu"},
       {"trigger": "go_back", "source": ["mood_detailed"], "dest": "mood"},
-      {"trigger": "go_back", "source": ["youtube_ing"], "dest": "youtube"},
       {"trigger": "go_back", "source": ["youtube_done"], "dest": "entertainment"},
       # {"trigger": "go_back", "source": ["menu", "see_image", "state1", "state2", "youtube", "try_blockchain", "write_message", "read_message", "image"], "dest": "user"},
     ],

@@ -385,7 +385,8 @@ class TocMachine(GraphMachine):
     print("I'm entering youtube")
 
     reply_token = event.reply_token
-    send_text_message(reply_token, "使用示範：\n\n想聽盧廣仲的魚仔？\n請輸入「聽 盧廣仲 魚仔」")
+    send_text_message(reply_token, "使用示範：\n\n想聽盧廣仲的魚仔？\n請輸入「聽 盧廣仲 魚仔」\n\n若不聽歌了，請輸入【離開】")
+    self.advance(event)
 
 
   def on_enter_youtube_ing(self, event):
@@ -395,7 +396,6 @@ class TocMachine(GraphMachine):
     reply_token = event.reply_token
     query = event.message.text
     send_youtube_video(user_id, reply_token, query)
-    self.go_back(event)
 
 
   def on_enter_youtube_done(self, event):
