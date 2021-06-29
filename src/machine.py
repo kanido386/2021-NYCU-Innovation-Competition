@@ -4,7 +4,8 @@ def create_machine():
   states = ["user", "menu"]
   mood = ["mood", "mood_detailed", "mood_done"]
   meal = ["meal", "meal_search", "meal_report", "meal_input", "meal_reward"]
-  category = [mood, meal]
+  diary = ["diary", "diary_done"]
+  category = [mood, meal, diary]
   for item in category:
     states.extend(item)
   machine = TocMachine(
@@ -25,6 +26,9 @@ def create_machine():
       { "trigger": "yes", "source": "meal_search", "dest": "meal_report", "conditions": "is_going_to_meal_report" },
       { "trigger": "no", "source": "meal_search", "dest": "meal_input", "conditions": "is_going_to_meal_input" },
       { "trigger": "advance", "source": "meal_input", "dest": "meal_reward", "conditions": "is_going_to_meal_reward" },
+      # diary
+      { "trigger": "advance", "source": "user", "dest": "diary", "conditions": "is_going_to_diary" },
+      { "trigger": "advance", "source": "diary", "dest": "diary_done", "conditions": "is_going_to_diary_done" },
       # {
       #     "trigger": "advance",
       #     "source": "user",
@@ -76,7 +80,7 @@ def create_machine():
       # TODO: 用 append 的方式來添加
       # TODO: message type other than text should put forward
       {"trigger": "go_back", "source": ["menu"], "dest": "user"},
-      {"trigger": "go_back", "source": ["mood_done", "meal_report", "meal_reward"], "dest": "menu"},
+      {"trigger": "go_back", "source": ["diary_done", "mood_done", "meal_report", "meal_reward"], "dest": "menu"},
       {"trigger": "go_back", "source": ["mood_detailed"], "dest": "mood"},
       # {"trigger": "go_back", "source": ["menu", "see_image", "state1", "state2", "youtube", "try_blockchain", "write_message", "read_message", "image"], "dest": "user"},
     ],

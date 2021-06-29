@@ -44,6 +44,14 @@ class TocMachine(GraphMachine):
 
   def is_going_to_meal_reward(self, event):
     return True
+
+
+  def is_going_to_diary(self, event):
+    text = event.message.text
+    return text.lower() == "share diary"
+
+  def is_going_to_diary_done(self, event):
+    return True
   
   
   # def is_going_to_state1(self, event):
@@ -185,6 +193,25 @@ class TocMachine(GraphMachine):
     # TODO: 獲得健康幣
     amount = 5
     send_text_message(reply_token, f'感謝您的回饋，送您 {amount} 枚健康幣～')
+    self.go_back(event)
+
+
+
+  def on_enter_diary(self, event):
+    print("I'm entering diary")
+
+    reply_token = event.reply_token
+    send_text_message(reply_token, "和我分享吧！")
+
+  
+  def on_enter_diary_done(self, event):
+    print("I'm entering diary_done")
+
+    reply_token = event.reply_token
+    # TODO: 產生文字雲
+    # TODO: 獲得健康幣
+    amount = 5
+    send_text_message(reply_token, f'謝謝您的分享，送您 {amount} 枚健康幣～')
     self.go_back(event)
 
   # def on_enter_state1(self, event):
