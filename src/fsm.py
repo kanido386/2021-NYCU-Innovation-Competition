@@ -4,7 +4,7 @@ import datetime
 from service.basic import send_text_message, push_text_message
 from service.other import send_youtube_video
 from service.blockchain import users, service_tokens
-from service.firebase import save_to_db, load_from_db, write_message, read_message, upload_image, send_image
+from service.firebase import write_message, read_message, upload_image, send_image
 from service.hardcode import send_menu
 
 class TocMachine(GraphMachine):
@@ -23,6 +23,9 @@ class TocMachine(GraphMachine):
 
   
   def is_going_to_mood_detailed(self, event):
+    return True
+
+  def is_going_to_mood_done(self, event):
     return True
   
   
@@ -93,21 +96,31 @@ class TocMachine(GraphMachine):
       score = int(text)
     except:
       send_text_message(reply_token, "請輸入數字 1~10 哦～")
-      self.go_back()
+      # TODO: would have bug
+      self.go_back(event)
 
     if score >= 1 and score <= 5:
-      # save_to_db(user_id, 'mood', )
-      value = load_from_db(user_id, 'mood')
-      print('==============================')
-      print(value)
-      print(type(value))
-      print('==============================')
+      # save_to_db(user_id, 'mood', {today: score}, 'dict')
+      # value = load_from_db(user_id, 'mood')
+      # print('==============================')
+      # print(value)
+      # print(type(value))
+      # print('==============================')
       send_text_message(reply_token, "怎麼了？")
     elif score >= 6 and score <= 10:
       send_text_message(reply_token, "是什麼讓您心情好？")
     else:
       send_text_message(reply_token, "請輸入數字 1~10 哦～")
-      self.go_back()
+      # TODO: would have bug
+      self.go_back(event)
+
+
+  def on_enter_mood_done(self, event):
+    print("I'm entering mood_done")
+
+    reply_token = event.reply_token
+    send_text_message(reply_token, "了解了！")
+    self.go_back()
 
   # def on_enter_state1(self, event):
   #   print("I'm entering state1")

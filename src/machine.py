@@ -2,7 +2,7 @@ from fsm import TocMachine
 
 def create_machine():
   states = ["user", "menu"]
-  mood = ["mood", "mood_detailed"]
+  mood = ["mood", "mood_detailed", "mood_done"]
   states.extend(mood)
   machine = TocMachine(
     # TODO: 用 append 的方式來添加
@@ -28,6 +28,12 @@ def create_machine():
           "source": "mood",
           "dest": "mood_detailed",
           "conditions": "is_going_to_mood_detailed",
+      },
+      {
+          "trigger": "advance",
+          "source": "mood_detailed",
+          "dest": "mood_done",
+          "conditions": "is_going_to_mood_done",
       },
       # {
       #     "trigger": "advance",
@@ -79,7 +85,8 @@ def create_machine():
       # },
       # TODO: 用 append 的方式來添加
       # TODO: message type other than text should put forward
-      {"trigger": "go_back", "source": ["menu", "mood"], "dest": "user"},
+      {"trigger": "go_back", "source": ["menu"], "dest": "user"},
+      {"trigger": "go_back", "source": ["mood_done"], "dest": "menu"},
       {"trigger": "go_back", "source": ["mood_detailed"], "dest": "mood"},
       # {"trigger": "go_back", "source": ["menu", "see_image", "state1", "state2", "youtube", "try_blockchain", "write_message", "read_message", "image"], "dest": "user"},
     ],
