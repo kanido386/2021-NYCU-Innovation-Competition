@@ -97,10 +97,15 @@ def send_entertainment_menu(user_id):
                             label='\U0001f431 我的寵物 \U0001f436',
                             text='pet'
                         ),
-                        MessageTemplateAction(
-                            label='給我好笑的',
-                            text='joke'
-                        ),
+                        # TODO:
+                        # MessageTemplateAction(
+                        #     label='給我好笑的',
+                        #     text='joke'
+                        # ),
+                        URITemplateAction(
+                            label='玩遊戲',
+                            uri='https://liff.line.me/1656147392-7bZOXoOQ'
+                        )
                     ]
                 ),              
             ]
