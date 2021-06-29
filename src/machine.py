@@ -54,7 +54,8 @@ def create_machine():
       # youtube
       { "trigger": "advance", "source": "entertainment", "dest": "youtube", "conditions": "is_going_to_youtube" },
       { "trigger": "advance", "source": "youtube", "dest": "youtube_send" },
-      { "trigger": "advance", "source": "youtube_send", "dest": "youtube_ing" },
+      { "trigger": "advance", "source": "youtube_send", "dest": "youtube_ing", "conditions": "is_going_to_youtube_ing" },
+      { "trigger": "advance", "source": "youtube_send", "dest": "entertainment", "conditions": "is_going_to_youtube_exit" },
       { "trigger": "advance", "source": "youtube_ing", "dest": "youtube_ing", "conditions": "is_going_to_youtube_ing" },
       { "trigger": "advance", "source": "youtube_ing", "dest": "youtube_done", "conditions": "is_going_to_youtube_done" },
       # {

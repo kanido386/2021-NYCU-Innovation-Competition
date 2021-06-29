@@ -103,6 +103,11 @@ class TocMachine(GraphMachine):
     text = event.message.text
     return text.lower() == "youtube"
 
+  def is_going_to_youtube_exit(self, event):
+    # go to entertainment
+    text = event.message.text
+    return "離開" in text
+
   def is_going_to_youtube_ing(self, event):
     text = event.message.text
     return "聽" in text
@@ -386,12 +391,6 @@ class TocMachine(GraphMachine):
 
     reply_token = event.reply_token
     send_text_message(reply_token, "使用示範：\n\n想聽盧廣仲的魚仔？\n請輸入「聽 盧廣仲 魚仔」\n\n若不聽歌了，請輸入【離開】")
-    self.advance(event)
-
-
-  def on_enter_youtube_send(self, event):
-    print("I'm entering youtube_send")
-
     self.advance(event)
 
 
