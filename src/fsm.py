@@ -83,6 +83,11 @@ class TocMachine(GraphMachine):
 
   def is_going_to_skin_done(self, event):
     return True
+
+
+  def is_going_to_report(self, event):
+    text = event.message.text
+    return text.lower() == "report"
   
   
   # def is_going_to_state1(self, event):
@@ -243,7 +248,7 @@ class TocMachine(GraphMachine):
     reply_token = event.reply_token
     # TODO: 產生文字雲
     # TODO: 存資料庫
-    # TODO: 獲得健康幣
+    # TODO: 獲得健康幣（或許可以根據字數來決定數量）
     amount = 5
     send_text_message(reply_token, f'謝謝您的分享，送您 {amount} 枚健康幣～')
     self.go_back(event)
@@ -331,6 +336,16 @@ class TocMachine(GraphMachine):
     else:
       send_text_message(reply_token, f'我們有 {accuracy}% 的信心，這可能是【{result}】')
     # TODO: 存資料庫
+    self.go_back(event)
+
+
+
+  def on_enter_report(self, event):
+    print("I'm entering report")
+
+    reply_token = event.reply_token
+    # TODO: 健康狀況回報
+    send_text_message(reply_token, "2021.06.29 Tue.\n\n【報告內容】\n\n祝您天天健康！")
     self.go_back(event)
 
   # def on_enter_state1(self, event):
