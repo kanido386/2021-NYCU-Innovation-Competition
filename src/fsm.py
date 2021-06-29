@@ -120,7 +120,7 @@ class TocMachine(GraphMachine):
 
     reply_token = event.reply_token
     send_text_message(reply_token, "了解了！")
-    self.go_back()
+    self.go_back(event)
 
   # def on_enter_state1(self, event):
   #   print("I'm entering state1")
