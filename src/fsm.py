@@ -1,7 +1,7 @@
 from flask.scaffold import F
 from transitions.extensions import GraphMachine
 
-from service.basic import send_text_message
+from service.basic import send_text_message, push_text_message
 from service.other import send_youtube_video
 from service.blockchain import users, service_tokens
 from service.firebase import write_message, read_message, upload_image, send_image
@@ -46,6 +46,11 @@ class TocMachine(GraphMachine):
     print(event)
     text = event.message.text
     return text.lower() == "see image"
+
+  
+  def on_enter_user(self, event):
+    user_id = event.source.user_id
+    push_text_message(user_id, '你好啊～')
 
 
   def on_enter_state1(self, event):
