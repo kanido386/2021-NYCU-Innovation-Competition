@@ -26,6 +26,20 @@ access_token = os.getenv("LINE_CHANNEL_ACCESS_TOKEN", None)
 line_bot_api = LineBotApi(access_token)
 
 
+def load_from_db(user_id, key):
+  user_doc_ref = db.collection('users').document(user_id)
+  user_doc = user_doc_ref.get().to_dict()
+  value = user_doc[key]
+  return value
+
+
+def save_to_db(user_id, key, value):
+  user_doc_ref = db.collection('users').document(user_id)
+  user_doc = user_doc_ref.get().to_dict()
+  user_doc[key] = value
+  user_doc_ref.set(user_doc)
+
+
 def write_message(user_id, message):
   user_doc_ref = db.collection('users').document(user_id)
   user_doc = user_doc_ref.get().to_dict()
