@@ -1,5 +1,6 @@
 from transitions.extensions import GraphMachine
 import datetime
+import time
 
 from service.basic import send_text_message, push_text_message
 from service.other import send_youtube_video
@@ -120,6 +121,7 @@ class TocMachine(GraphMachine):
 
     reply_token = event.reply_token
     send_text_message(reply_token, "了解了！")
+    time.sleep(3)
     self.go_back(event)
 
   # def on_enter_state1(self, event):
