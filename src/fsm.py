@@ -99,7 +99,7 @@ class TocMachine(GraphMachine):
     return "離開" in text
 
 
-  def is_going_to_youtube(self, event):
+  def is_going_to_mood(self, event):
     text = event.message.text
     return text.lower() == "youtube"
 
@@ -249,6 +249,9 @@ class TocMachine(GraphMachine):
     reply_token = event.reply_token
     send_text_message(reply_token, "請您輸入食物相關資訊")
 
+  # def is_going_to_read_message(self, event):
+  #   text = event.message.text
+  #   return text.lower() == "message"
 
   def on_enter_meal_reward(self, event):
     print("I'm entering meal_reward")
@@ -261,6 +264,10 @@ class TocMachine(GraphMachine):
     self.go_back(event)
 
 
+  # def is_going_to_see_image(self, event):
+  #   print(event)
+  #   text = event.message.text
+  #   return text.lower() == "see image"
 
   def on_enter_diary(self, event):
     print("I'm entering diary")
@@ -334,6 +341,8 @@ class TocMachine(GraphMachine):
     reply_token = event.reply_token
     send_text_message(reply_token, "上傳圖片給我看看吧！")
 
+  # # def on_exit_state1(self):
+  # #   print("Leaving state1")
 
   def on_enter_skin_process(self, event):
     print("I'm entering skin_process")
