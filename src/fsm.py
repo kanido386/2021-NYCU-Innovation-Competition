@@ -97,6 +97,19 @@ class TocMachine(GraphMachine):
   def is_going_to_exit(self, event):
     text = event.message.text
     return "離開" in text
+
+
+  def is_going_to_youtube(self, event):
+    text = event.message.text
+    return text.lower() == "youtube"
+
+  def is_going_to_youtube_ing(self, event):
+    text = event.message.text
+    return "聽" in text
+
+  def is_going_to_youtube_done(self, event):
+    text = event.message.text
+    return "離開" in text
   
   
   # def is_going_to_state1(self, event):
@@ -366,6 +379,32 @@ class TocMachine(GraphMachine):
     time.sleep(1)
     send_entertainment_menu(user_id)
 
+
+  
+  def on_enter_youtube(self, event):
+    print("I'm entering youtube")
+
+    reply_token = event.reply_token
+    send_text_message(reply_token, "使用示範：\n\n想聽盧廣仲的魚仔？\n請輸入「聽 盧廣仲 魚仔」")
+
+
+  def on_enter_youtube_ing(self, event):
+    print("I'm entering youtube_ing")
+
+    user_id = event.source.user_id
+    reply_token = event.reply_token
+    query = event.message.text
+    send_youtube_video(user_id, reply_token, query)
+    self.go_back(event)
+
+
+  def on_enter_youtube_done(self, event):
+    print("I'm entering youtube_done")
+
+    reply_token = event.reply_token
+    send_text_message(reply_token, "聽歌不錯吧？")
+    self.go_back(event)
+
   # def on_enter_state1(self, event):
   #   print("I'm entering state1")
 
@@ -388,16 +427,6 @@ class TocMachine(GraphMachine):
 
   # # def on_exit_state2(self):
   # #   print("Leaving state2")
-
-
-  # def on_enter_youtube(self, event):
-  #   print("I'm entering youtube")
-
-  #   id = event.source.user_id
-  #   reply_token = event.reply_token
-  #   query = event.message.text
-  #   send_youtube_video(id, reply_token, query)
-  #   self.go_back()
 
 
   # def on_enter_try_blockchain(self, event):
