@@ -1,11 +1,12 @@
 from transitions.extensions import GraphMachine
 import datetime
 import time
+import random
 
 from service.basic import send_text_message, push_text_message
 from service.other import send_youtube_video
 from service.blockchain import users, service_tokens
-from service.firebase import write_message, read_message, upload_image, send_image
+from service.firebase import write_message, read_message, upload_skin_image, send_image
 from service.hardcode import send_menu
 
 class TocMachine(GraphMachine):
@@ -280,6 +281,44 @@ class TocMachine(GraphMachine):
     hour = 7
     minute = 30
     send_text_message(reply_token, f'您一共睡了 {hour} 小時 {minute} 分鐘。\n記得，睡眠也很重要哦！')
+    self.go_back(event)
+
+
+
+  def on_enter_skin(self, event):
+    print("I'm entering skin")
+
+    reply_token = event.reply_token
+    send_text_message(reply_token, "上傳圖片給我看看吧！")
+
+
+  def on_enter_skin_process(self, event):
+    print("I'm entering skin_process")
+
+    user_id = event.source.user_id
+    message_id = event.message.id
+    file_name = str(event.timestamp) + ".jpg"
+    upload_skin_image(user_id, message_id, file_name)
+
+    reply_token = event.reply_token
+    send_text_message(reply_token, "照片處理中，請稍候⋯⋯")
+    # TODO: 處理照片
+    time.sleep(5)
+
+  
+  def on_enter_skin_done(self, event):
+    print("I'm entering skin_done")
+
+    reply_token = event.reply_token
+    # TODO: 回報預測結果
+    chance = [30, 60, 80]
+    accuracy = random.choice(chance)
+    result = '紅疹'
+    if accuracy < 60:
+      send_text_message(reply_token, f'照片可能不夠清楚，請再重拍一張！')
+    else:
+      send_text_message(reply_token, f'我們有 {accuracy}% 的信心，這可能是【{result}】')
+    # TODO: 存資料庫
     self.go_back(event)
 
   # def on_enter_state1(self, event):
