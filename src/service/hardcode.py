@@ -87,7 +87,7 @@ def send_entertainment_menu(user_id):
                 CarouselColumn(
                     thumbnail_image_url='https://cdn2.ettoday.net/images/2850/d2850538.jpg',
                     title='娛樂專區',
-                    text='休息是為了走更長遠的路～',
+                    text='休息是為了走更長遠的路～\n（輸入【離開】以回到選單）',
                     actions=[
                         MessageTemplateAction(
                             label='聽音樂',
@@ -101,10 +101,6 @@ def send_entertainment_menu(user_id):
                             label='給我好笑的',
                             text='joke'
                         ),
-                        MessageTemplateAction(
-                            label='【回到選單】',
-                            text='exit'
-                        )
                     ]
                 ),              
             ]
