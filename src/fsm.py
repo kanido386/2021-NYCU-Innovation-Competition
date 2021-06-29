@@ -98,13 +98,16 @@ class TocMachine(GraphMachine):
     if score >= 1 and score <= 5:
       # save_to_db(user_id, 'mood', )
       value = load_from_db(user_id, 'mood')
+      print('==============================')
       print(value)
       print(type(value))
+      print('==============================')
       send_text_message(reply_token, "怎麼了？")
     elif score >= 6 and score <= 10:
       send_text_message(reply_token, "是什麼讓您心情好？")
     else:
       send_text_message(reply_token, "請輸入數字 1~10 哦～")
+      self.go_back()
 
   # def on_enter_state1(self, event):
   #   print("I'm entering state1")
