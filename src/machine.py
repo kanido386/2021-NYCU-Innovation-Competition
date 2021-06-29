@@ -1,9 +1,9 @@
 from fsm import TocMachine
 
 def create_machine():
-  states=["user", "menu"]
+  states = ["user", "menu"]
   mood = ["mood", "mood_detailed"]
-  states.append(mood)
+  states.extend(mood)
   machine = TocMachine(
     # TODO: 用 append 的方式來添加
     states=states,
