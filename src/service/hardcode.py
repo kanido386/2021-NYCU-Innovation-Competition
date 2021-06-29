@@ -102,6 +102,7 @@ def send_entertainment_menu(user_id):
                         #     label='給我好笑的',
                         #     text='joke'
                         # ),
+                        # TODO: 有bug 玩完遊戲以後不能點聽音樂⋯⋯
                         URITemplateAction(
                             label='玩遊戲',
                             uri='https://liff.line.me/1656147392-7bZOXoOQ'

@@ -99,7 +99,7 @@ class TocMachine(GraphMachine):
     return "離開" in text
 
 
-  def is_going_to_mood(self, event):
+  def is_going_to_youtube(self, event):
     text = event.message.text
     return text.lower() == "youtube"
 
