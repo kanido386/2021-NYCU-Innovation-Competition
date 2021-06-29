@@ -9,7 +9,8 @@ def create_machine():
   sleeping = ["sleeping", "sleeping_up", "sleeping_done"]
   skin = ["skin", "skin_process", "skin_done"]
   report = ["report"]
-  category = [mood, meal, diary, exercise, sleeping, skin, report]
+  entertainment = ["entertainment"]
+  category = [mood, meal, diary, exercise, sleeping, skin, report, entertainment]
   for item in category:
     states.extend(item)
   machine = TocMachine(
@@ -46,6 +47,8 @@ def create_machine():
       { "trigger": "advance", "source": "skin_process", "dest": "skin_done", "conditions": "is_going_to_skin_done" },
       # report
       { "trigger": "advance", "source": "user", "dest": "report", "conditions": "is_going_to_report" },
+      # entertainment
+      { "trigger": "advance", "source": "user", "dest": "entertainment", "conditions": "is_going_to_entertainment" },
       # {
       #     "trigger": "advance",
       #     "source": "user",

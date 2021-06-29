@@ -7,7 +7,7 @@ from service.basic import send_text_message, push_text_message
 from service.other import send_youtube_video
 from service.blockchain import users, service_tokens
 from service.firebase import write_message, read_message, upload_skin_image, send_image
-from service.hardcode import send_menu
+from service.hardcode import send_menu, send_entertainment_menu
 
 class TocMachine(GraphMachine):
   def __init__(self, **machine_configs):
@@ -88,6 +88,11 @@ class TocMachine(GraphMachine):
   def is_going_to_report(self, event):
     text = event.message.text
     return text.lower() == "report"
+
+
+  def is_going_to_entertainment(self, event):
+    text = event.message.text
+    return text.lower() == "entertainment"
   
   
   # def is_going_to_state1(self, event):
@@ -347,6 +352,15 @@ class TocMachine(GraphMachine):
     # TODO: 健康狀況回報
     send_text_message(reply_token, "2021.06.29 Tue.\n\n【報告內容】\n\n祝您天天健康！")
     self.go_back(event)
+
+
+
+  def on_enter_entertainment(self, event):
+    print("I'm entering entertainment")
+
+    user_id = event.source.user_id
+    time.sleep(1)
+    send_entertainment_menu(user_id)
 
   # def on_enter_state1(self, event):
   #   print("I'm entering state1")
