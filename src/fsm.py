@@ -93,6 +93,10 @@ class TocMachine(GraphMachine):
   def is_going_to_entertainment(self, event):
     text = event.message.text
     return text.lower() == "entertainment"
+
+  def is_going_to_exit(self, event):
+    text = event.message.text
+    return "離開" in text
   
   
   # def is_going_to_state1(self, event):

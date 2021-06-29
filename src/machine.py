@@ -49,6 +49,7 @@ def create_machine():
       { "trigger": "advance", "source": "user", "dest": "report", "conditions": "is_going_to_report" },
       # entertainment
       { "trigger": "advance", "source": "user", "dest": "entertainment", "conditions": "is_going_to_entertainment" },
+      { "trigger": "advance", "source": "entertainment", "dest": "menu", "conditions": "is_going_to_exit" },
       # {
       #     "trigger": "advance",
       #     "source": "user",
