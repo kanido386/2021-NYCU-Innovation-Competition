@@ -72,6 +72,17 @@ class TocMachine(GraphMachine):
 
   def is_going_to_sleeping_done(self, event):
     return True
+
+  
+  def is_going_to_skin(self, event):
+    text = event.message.text
+    return text.lower() == "skin"
+
+  def is_going_to_skin_process(self, event):
+    return event.message.type == "image"
+
+  def is_going_to_skin_done(self, event):
+    return True
   
   
   # def is_going_to_state1(self, event):
@@ -301,9 +312,10 @@ class TocMachine(GraphMachine):
     upload_skin_image(user_id, message_id, file_name)
 
     reply_token = event.reply_token
-    send_text_message(reply_token, "照片處理中，請稍候⋯⋯")
+    push_text_message(user_id, "照片處理中，請稍候⋯⋯")
     # TODO: 處理照片
     time.sleep(5)
+    self.advance(event)
 
   
   def on_enter_skin_done(self, event):
