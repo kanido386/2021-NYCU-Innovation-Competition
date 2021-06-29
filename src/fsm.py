@@ -389,6 +389,12 @@ class TocMachine(GraphMachine):
     self.advance(event)
 
 
+  def on_enter_youtube_send(self, event):
+    print("I'm entering youtube_send")
+
+    self.advance(event)
+
+
   def on_enter_youtube_ing(self, event):
     print("I'm entering youtube_ing")
 
