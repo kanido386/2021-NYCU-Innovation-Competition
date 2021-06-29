@@ -1,4 +1,5 @@
 import os
+import time
 
 from linebot import LineBotApi
 from linebot.models import TextSendMessage, ImageSendMessage, TemplateSendMessage, ImageCarouselColumn, ImageCarouselTemplate, ButtonsTemplate, MessageTemplateAction, URITemplateAction, ImageSendMessage, CarouselTemplate, CarouselColumn
@@ -14,7 +15,7 @@ access_token = os.getenv("LINE_CHANNEL_ACCESS_TOKEN", None)
 line_bot_api = LineBotApi(access_token)
 
 
-def send_youtube_video(id, reply_token, query):
+def send_youtube_video(user_id, reply_token, query):
   youTubeApiKey = os.getenv("YOUTUBE_API_KEY", None)
   youtube = build('youtube', 'v3', developerKey=youTubeApiKey)
   query = query[2:]
@@ -40,7 +41,7 @@ def send_youtube_video(id, reply_token, query):
           columns=[
               CarouselColumn(
                   thumbnail_image_url=Videos[0]['snippet']['thumbnails']['high']['url'],
-                  title='Song 1',
+                  title='是這個？',
                   text=Videos[0]['snippet']['title'][:60],
                   actions=[
                       MessageTemplateAction(
@@ -51,7 +52,7 @@ def send_youtube_video(id, reply_token, query):
               ),
               CarouselColumn(
                   thumbnail_image_url=Videos[1]['snippet']['thumbnails']['high']['url'],
-                  title='Song 2',
+                  title='這個？',
                   text=Videos[1]['snippet']['title'][:60],
                   actions=[
                       MessageTemplateAction(
@@ -62,7 +63,7 @@ def send_youtube_video(id, reply_token, query):
               ),
               CarouselColumn(
                   thumbnail_image_url=Videos[2]['snippet']['thumbnails']['high']['url'],
-                  title='Song 3',
+                  title='還是這個呢？',
                   text=Videos[2]['snippet']['title'][:60],
                   actions=[
                       MessageTemplateAction(
@@ -75,6 +76,8 @@ def send_youtube_video(id, reply_token, query):
       )
     )
 
-  line_bot_api.push_message(id, message)
+  line_bot_api.push_message(user_id, TextSendMessage(text="哇！找到了好多～"))
+  time.sleep(1)
+  line_bot_api.push_message(user_id, message)
 
   return "OK"

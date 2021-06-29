@@ -67,7 +67,7 @@ def read_message(user_id):
   return message
 
 
-def upload_image(user_id, message_id, file_name):
+def upload_skin_image(user_id, message_id, file_name):
   message_content = line_bot_api.get_message_content(message_id)
   temp_file_path = user_id
   with open(temp_file_path, 'wb') as fd:
@@ -84,7 +84,7 @@ def upload_image(user_id, message_id, file_name):
   
   user_doc_ref = db.collection('users').document(user_id)
   user_doc = user_doc_ref.get().to_dict()
-  user_doc['image'] = saving_path
+  user_doc['skin_image'] = saving_path
   user_doc_ref.set(user_doc)
 
 

@@ -75,3 +75,37 @@ def send_menu(user_id):
   line_bot_api.push_message(user_id, message)
 
   return "OK"
+
+
+
+
+def send_entertainment_menu(user_id):
+    message = TemplateSendMessage(
+        alt_text='選單',
+        template=CarouselTemplate(
+            columns=[
+                CarouselColumn(
+                    thumbnail_image_url='https://cdn2.ettoday.net/images/2850/d2850538.jpg',
+                    title='娛樂專區',
+                    text='休息是為了走更長遠的路～\n（輸入【離開】以回到選單）',
+                    actions=[
+                        MessageTemplateAction(
+                            label='聽音樂',
+                            text='youtube'
+                        ),
+                        MessageTemplateAction(
+                            label='\U0001f431 我的寵物 \U0001f436',
+                            text='pet'
+                        ),
+                        MessageTemplateAction(
+                            label='給我好笑的',
+                            text='joke'
+                        ),
+                    ]
+                ),              
+            ]
+        )
+    )
+    line_bot_api.push_message(user_id, message)
+
+    return "OK"
