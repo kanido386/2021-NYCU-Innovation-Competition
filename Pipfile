@@ -11,6 +11,7 @@ transitions = "*"
 pygraphviz = "*"
 google-api-python-client = "*"
 firebase-admin = "*"
+tensorflow-cpu = "*"
 
 [dev-packages]
 
