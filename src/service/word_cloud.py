@@ -16,13 +16,13 @@ def word_cloud(user_id, text):
 
   # WordCloud
   wc = WordCloud(
-    max_words=30,
+    max_words=50,
     # font_path=font_path,
     font_path='NotoSansCJKjp-Bold.otf',
-    max_font_size=40,
+    max_font_size=50,
     background_color='white',
     random_state=42,
-    relative_scaling=0
+    relative_scaling=0.5
   )
   cloud = wc.generate(token)
 
