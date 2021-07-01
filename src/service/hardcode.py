@@ -55,9 +55,13 @@ def send_menu(user_id):
                   title='健康助理',
                   text='您的健康，我關心！',
                   actions=[
-                      MessageTemplateAction(
+                      # MessageTemplateAction(
+                      #     label='身體哪裡不舒服呢？',
+                      #     text='encyclopedia'
+                      # ),
+                      URITemplateAction(
                           label='身體哪裡不舒服呢？',
-                          text='encyclopedia'
+                          uri='https://liff.line.me/1656147392-8PJxaVx3'
                       ),
                       MessageTemplateAction(
                           label='膚況分析',

@@ -6,7 +6,7 @@ from firebase_admin import storage
 import os
 import datetime
 
-from .basic import send_image_url
+from .basic import send_image_url, push_image_url
 
 from linebot import LineBotApi
 from linebot.models import TextSendMessage, ImageSendMessage, TemplateSendMessage, ImageCarouselColumn, ImageCarouselTemplate, ButtonsTemplate, MessageTemplateAction, URITemplateAction, ImageSendMessage, CarouselTemplate, CarouselColumn
@@ -65,6 +65,36 @@ def read_message(user_id):
   user_doc = user_doc_ref.get().to_dict()
   message = user_doc['message']
   return message
+
+
+
+def upload_wordcloud(user_id, output_file):
+  saving_path = f'{user_id}/wordcloud.png'
+  blob = bucket.blob(saving_path)
+
+  wordcloud_file = output_file
+  with open(wordcloud_file, 'rb') as wordcloud:
+    blob.upload_from_file(wordcloud)
+
+  os.remove(wordcloud_file)
+
+  user_doc_ref = db.collection('users').document(user_id)
+  user_doc = user_doc_ref.get().to_dict()
+  user_doc['wordcloud_file'] = saving_path
+  user_doc_ref.set(user_doc)
+
+
+def send_wordcloud(user_id):
+  user_doc_ref = db.collection('users').document(user_id)
+  user_doc = user_doc_ref.get().to_dict()
+  image = user_doc['wordcloud_file']
+  blob = bucket.blob(image)
+  # generate url for img
+  img_url = blob.generate_signed_url(datetime.timedelta(seconds=300), method='GET')
+  push_image_url(user_id, img_url)
+
+
+
 
 
 def upload_skin_image(user_id, message_id, file_name):

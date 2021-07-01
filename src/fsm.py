@@ -8,6 +8,7 @@ from service.other import send_youtube_video
 from service.blockchain import users, service_tokens
 from service.firebase import write_message, read_message, upload_skin_image, send_image
 from service.hardcode import send_menu, send_entertainment_menu
+from service.word_cloud import word_cloud
 
 class TocMachine(GraphMachine):
   def __init__(self, **machine_configs):
@@ -281,6 +282,9 @@ class TocMachine(GraphMachine):
 
     reply_token = event.reply_token
     # TODO: 產生文字雲
+    user_id = event.source.user_id
+    text = event.message.text
+    word_cloud(user_id, text)
     # TODO: 存資料庫
     # TODO: 獲得健康幣（或許可以根據字數來決定數量）
     amount = 5
