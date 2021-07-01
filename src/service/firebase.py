@@ -53,6 +53,11 @@ line_bot_api = LineBotApi(access_token)
 #     # user_doc_ref.set(user_doc)
 
 
+def init_db(user_id):
+  if db.collection('users').document(user_id).get().to_dict() == None:
+    db.collection('users').document(user_id).set({'test': 'test'})
+
+
 def write_message(user_id, message):
   user_doc_ref = db.collection('users').document(user_id)
   user_doc = user_doc_ref.get().to_dict()

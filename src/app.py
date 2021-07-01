@@ -9,7 +9,7 @@ from linebot.exceptions import InvalidSignatureError, LineBotApiError
 from linebot.models import MessageEvent, TextMessage, TextSendMessage
 
 from service.basic import send_text_message
-from service.firebase import get_user_list
+from service.firebase import get_user_list, init_db
 from machine import create_machine
 from dotenv import load_dotenv
 
@@ -66,6 +66,7 @@ def webhook_handler():
 
     # Create a machine for new user
     user_id = event.source.user_id
+    init_db(user_id)
     if user_id not in machines:
       machines[user_id] = create_machine()
 
