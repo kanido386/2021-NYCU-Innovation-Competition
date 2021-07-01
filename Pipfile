@@ -13,6 +13,7 @@ google-api-python-client = "*"
 firebase-admin = "*"
 jieba = "*"
 wordcloud = "*"
+algorithmia = "*"
 
 [dev-packages]
 

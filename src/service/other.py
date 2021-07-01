@@ -1,5 +1,6 @@
 import os
 import time
+import Algorithmia
 
 from linebot import LineBotApi
 from linebot.models import TextSendMessage, ImageSendMessage, TemplateSendMessage, ImageCarouselColumn, ImageCarouselTemplate, ButtonsTemplate, MessageTemplateAction, URITemplateAction, ImageSendMessage, CarouselTemplate, CarouselColumn
@@ -13,6 +14,21 @@ from googleapiclient.discovery import build
 
 access_token = os.getenv("LINE_CHANNEL_ACCESS_TOKEN", None)
 line_bot_api = LineBotApi(access_token)
+
+
+
+def get_skin_detect_result(img_url):
+  client = Algorithmia.client('sim/bKiRMjrs+PMrFeKsadmIujb1')
+  algo = client.algo('kanido386/skin_detect/0.2.0')
+  algo.set_options(timeout=20, stdout=False)
+  
+  try:
+    probability, symptom_en, symptom = algo.pipe(img_url).result    
+  except:
+    return 0, 'dummy'
+
+  return probability, symptom_en, symptom
+
 
 
 def send_youtube_video(user_id, reply_token, query):

@@ -4,9 +4,9 @@ import time
 import random
 
 from service.basic import send_text_message, push_text_message
-from service.other import send_youtube_video
+from service.other import send_youtube_video, get_skin_detect_result
 from service.blockchain import users, service_tokens
-from service.firebase import write_message, read_message, upload_skin_image, send_image
+from service.firebase import write_message, read_message, upload_skin_image, send_image, get_skin_image_url
 from service.hardcode import send_menu, send_entertainment_menu
 from service.word_cloud import word_cloud
 
@@ -160,7 +160,7 @@ class TocMachine(GraphMachine):
     print("I'm entering menu")
 
     user_id = event.source.user_id
-    time.sleep(3)
+    time.sleep(2)
     send_menu(user_id)
     self.go_back()
 
@@ -281,10 +281,12 @@ class TocMachine(GraphMachine):
     print("I'm entering diary_done")
 
     reply_token = event.reply_token
-    # TODO: 產生文字雲
+    
+    # 產生文字雲
     user_id = event.source.user_id
     text = event.message.text
     word_cloud(user_id, text)
+
     # TODO: 存資料庫
     # TODO: 獲得健康幣（或許可以根據字數來決定數量）
     amount = 5
@@ -357,9 +359,7 @@ class TocMachine(GraphMachine):
     upload_skin_image(user_id, message_id, file_name)
 
     reply_token = event.reply_token
-    push_text_message(user_id, "照片處理中，請稍候⋯⋯")
-    # TODO: 處理照片
-    time.sleep(5)
+    push_text_message(user_id, "照片分析中，請稍候⋯⋯")
     self.advance(event)
 
   
@@ -367,14 +367,20 @@ class TocMachine(GraphMachine):
     print("I'm entering skin_done")
 
     reply_token = event.reply_token
+
     # TODO: 回報預測結果
-    chance = [30, 60, 80]
-    accuracy = random.choice(chance)
-    result = '紅疹'
-    if accuracy < 60:
+    user_id = event.source.user_id
+    img_url = get_skin_image_url(user_id)
+    probability, symptom_en, symptom = get_skin_detect_result(img_url)
+    # chance = [30, 60, 80]
+    # accuracy = random.choice(chance)
+    # result = '紅疹'
+    probability = max(probability) * 100
+    if probability < 70:
       send_text_message(reply_token, f'照片可能不夠清楚，請再重拍一張！')
     else:
-      send_text_message(reply_token, f'我們有 {accuracy}% 的信心，這可能是【{result}】')
+      send_text_message(reply_token, f'我們有 {probability:.2f}% 的信心，這可能是：\n{symptom}')
+
     # TODO: 存資料庫
     self.go_back(event)
 

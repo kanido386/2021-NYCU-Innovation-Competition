@@ -118,6 +118,15 @@ def upload_skin_image(user_id, message_id, file_name):
   user_doc_ref.set(user_doc)
 
 
+def get_skin_image_url(user_id):
+  user_doc_ref = db.collection('users').document(user_id)
+  user_doc = user_doc_ref.get().to_dict()
+  image = user_doc['skin_image']
+  blob = bucket.blob(image)
+  img_url = blob.generate_signed_url(datetime.timedelta(seconds=300), method='GET')
+  return img_url
+
+
 def send_image(user_id, reply_token):
   user_doc_ref = db.collection('users').document(user_id)
   user_doc = user_doc_ref.get().to_dict()
