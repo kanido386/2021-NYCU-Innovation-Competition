@@ -1,3 +1,5 @@
+import os
+
 import jieba
 from wordcloud import WordCloud
 from .firebase import send_wordcloud, upload_wordcloud
@@ -8,9 +10,14 @@ def word_cloud(user_id, text):
   # Tokenize
   token = ' '.join(jieba.cut(text))
 
+  # d = os.getcwd()
+  # font_path = d + 'src/service/NotoSansCJKjp-Bold.otf'
+  # print(font_path)
+
   # WordCloud
   wc = WordCloud(
     max_words=30,
+    # font_path=font_path,
     font_path='NotoSansCJKjp-Bold.otf',
     max_font_size=40,
     background_color='white',
