@@ -8,6 +8,8 @@ from linebot import LineBotApi, WebhookParser
 from linebot.exceptions import InvalidSignatureError, LineBotApiError
 from linebot.models import MessageEvent, TextMessage, TextSendMessage
 
+from service.hardcode import send_menu
+from service.blockchain.functionality import init_blockchain
 from service.basic import send_text_message
 from service.firebase import get_user_list, init_db
 from machine import create_machine
@@ -55,9 +57,12 @@ def webhook_handler():
   except InvalidSignatureError:
     abort(400)
 
-  for event in events:
-    if not isinstance(event, MessageEvent):
-      continue
+  # TODO:
+  for event in events[0:1]:
+    print(event)
+    # TODO:
+    # if not isinstance(event, MessageEvent):
+    #   continue
     # TODO:
     # if not isinstance(event.message, TextMessage):
     #   continue
@@ -66,9 +71,18 @@ def webhook_handler():
 
     # Create a machine for new user
     user_id = event.source.user_id
-    init_db(user_id)
     if user_id not in machines:
+      init_db(user_id)
+      # init_blockchain(user_id)
       machines[user_id] = create_machine()
+
+    
+    # TODO: handle menu part
+    user_id = event.source.user_id
+    if event.type == 'postback' and 'menu' in event.postback.data:
+      option = int(event.postback.data[-1])
+      send_menu(user_id, option)
+
 
     # Advance the FSM for each MessageEvent
     response = machines[event.source.user_id].advance(event)

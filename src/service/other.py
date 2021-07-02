@@ -16,6 +16,39 @@ access_token = os.getenv("LINE_CHANNEL_ACCESS_TOKEN", None)
 line_bot_api = LineBotApi(access_token)
 
 
+def get_foods(food):
+  client = Algorithmia.client('sim/bKiRMjrs+PMrFeKsadmIujb1')
+  algo = client.algo('kanido386/food_calories/0.2.1')
+  algo.set_options(timeout=20, stdout=False)
+
+  try:
+    a = {
+      "food": food, "option": 2
+    }
+    foods = algo.pipe(a).result
+  except:
+    return ['1', '2', '3', '4', '5']
+
+  return foods
+
+
+
+def get_calories(food):
+  client = Algorithmia.client('sim/bKiRMjrs+PMrFeKsadmIujb1')
+  algo = client.algo('kanido386/food_calories/0.2.1')
+  algo.set_options(timeout=20, stdout=False)
+
+  try:
+    a = {
+      "food": food, "option": 1
+    }
+    calories = algo.pipe(a).result
+  except:
+    return 100
+
+  return calories
+
+
 
 def get_skin_detect_result(img_url):
   client = Algorithmia.client('sim/bKiRMjrs+PMrFeKsadmIujb1')
@@ -34,7 +67,7 @@ def get_skin_detect_result(img_url):
 def send_youtube_video(user_id, reply_token, query):
   youTubeApiKey = os.getenv("YOUTUBE_API_KEY", None)
   youtube = build('youtube', 'v3', developerKey=youTubeApiKey)
-  query = query[2:]
+  query = query[10:]
   request = youtube.search().list(part='snippet', q=query, type='video')
   response = request.execute()
   # The video that is most relevant to the search query
@@ -57,33 +90,33 @@ def send_youtube_video(user_id, reply_token, query):
           columns=[
               CarouselColumn(
                   thumbnail_image_url=Videos[0]['snippet']['thumbnails']['high']['url'],
-                  title='是這個？',
+                  title='This one?',
                   text=Videos[0]['snippet']['title'][:60],
                   actions=[
                       MessageTemplateAction(
-                          label='聽這首',
+                          label='Listen to this',
                           text=videoUrls[0]
                       )
                   ]
               ),
               CarouselColumn(
                   thumbnail_image_url=Videos[1]['snippet']['thumbnails']['high']['url'],
-                  title='這個？',
+                  title='This one?',
                   text=Videos[1]['snippet']['title'][:60],
                   actions=[
                       MessageTemplateAction(
-                          label='聽這首',
+                          label='Listen to this',
                           text=videoUrls[1]
                       )
                   ]
               ),
               CarouselColumn(
                   thumbnail_image_url=Videos[2]['snippet']['thumbnails']['high']['url'],
-                  title='還是這個呢？',
+                  title='Or this one?',
                   text=Videos[2]['snippet']['title'][:60],
                   actions=[
                       MessageTemplateAction(
-                          label='聽這首',
+                          label='Listen to this',
                           text=videoUrls[2]
                       )
                   ]
@@ -92,7 +125,7 @@ def send_youtube_video(user_id, reply_token, query):
       )
     )
 
-  line_bot_api.push_message(user_id, TextSendMessage(text="哇！找到了好多～"))
+  line_bot_api.push_message(user_id, TextSendMessage(text="Wow, so many videos!"))
   time.sleep(1)
   line_bot_api.push_message(user_id, message)
 

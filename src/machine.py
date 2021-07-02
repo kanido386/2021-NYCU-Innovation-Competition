@@ -1,7 +1,9 @@
 from fsm import TocMachine
 
 def create_machine():
-  states = ["user", "menu"]
+  states = ["user"]
+  # states = ["user", "menu"]
+  menu = ["menu1", "menu2", "menu3"]
   mood = ["mood", "mood_detailed", "mood_done"]
   meal = ["meal", "meal_search", "meal_report", "meal_input", "meal_reward"]
   diary = ["diary", "diary_done"]
@@ -11,7 +13,7 @@ def create_machine():
   report = ["report"]
   entertainment = ["entertainment"]
   youtube = ["youtube", "youtube_send", "youtube_ing", "youtube_done"]
-  category = [mood, meal, diary, exercise, sleeping, skin, report, entertainment, youtube]
+  category = [menu, mood, meal, diary, exercise, sleeping, skin, report, entertainment, youtube]
   for item in category:
     states.extend(item)
   machine = TocMachine(
@@ -21,7 +23,7 @@ def create_machine():
     # TODO: 用 append 的方式來添加
     # TODO: message type other than text should put forward
     transitions=[
-      { "trigger": "advance", "source": "user", "dest": "menu", "conditions": "is_going_to_menu" },
+      # { "trigger": "advance", "source": "user", "dest": "menu", "conditions": "is_going_to_menu" },
       # mood
       { "trigger": "advance", "source": "user", "dest": "mood", "conditions": "is_going_to_mood" },
       { "trigger": "advance", "source": "mood", "dest": "mood_detailed", "conditions": "is_going_to_mood_detailed" },
@@ -29,8 +31,10 @@ def create_machine():
       # meal
       { "trigger": "advance", "source": "user", "dest": "meal", "conditions": "is_going_to_meal" },
       { "trigger": "advance", "source": "meal", "dest": "meal_search", "conditions": "is_going_to_meal_search" },
-      { "trigger": "yes", "source": "meal_search", "dest": "meal_report", "conditions": "is_going_to_meal_report" },
-      { "trigger": "no", "source": "meal_search", "dest": "meal_input", "conditions": "is_going_to_meal_input" },
+      { "trigger": "advance", "source": "meal_search", "dest": "meal_report", "conditions": "is_going_to_meal_report" },
+      # TODO:
+      # { "trigger": "yes", "source": "meal_search", "dest": "meal_report", "conditions": "is_going_to_meal_report" },
+      # { "trigger": "no", "source": "meal_search", "dest": "meal_input", "conditions": "is_going_to_meal_input" },
       { "trigger": "advance", "source": "meal_input", "dest": "meal_reward", "conditions": "is_going_to_meal_reward" },
       # diary
       { "trigger": "advance", "source": "user", "dest": "diary", "conditions": "is_going_to_diary" },
@@ -50,7 +54,7 @@ def create_machine():
       { "trigger": "advance", "source": "user", "dest": "report", "conditions": "is_going_to_report" },
       # entertainment
       { "trigger": "advance", "source": "user", "dest": "entertainment", "conditions": "is_going_to_entertainment" },
-      { "trigger": "advance", "source": "entertainment", "dest": "menu", "conditions": "is_going_to_exit" },
+      { "trigger": "advance", "source": "entertainment", "dest": "user", "conditions": "is_going_to_exit" },
       # youtube
       { "trigger": "advance", "source": "entertainment", "dest": "youtube", "conditions": "is_going_to_youtube" },
       { "trigger": "advance", "source": "youtube", "dest": "youtube_send" },
@@ -102,8 +106,8 @@ def create_machine():
       # },
       # TODO: 用 append 的方式來添加
       # TODO: message type other than text should put forward
-      {"trigger": "go_back", "source": ["menu"], "dest": "user"},
-      {"trigger": "go_back", "source": ["report", "skin_done", "sleeping_done", "exercise_done", "diary_done", "mood_done", "meal_report", "meal_reward"], "dest": "menu"},
+      # {"trigger": "go_back", "source": ["menu"], "dest": "user"},
+      {"trigger": "go_back", "source": ["report", "skin_done", "sleeping_done", "exercise_done", "diary_done", "mood_done", "meal_report", "meal_reward"], "dest": "user"},
       {"trigger": "go_back", "source": ["mood_detailed"], "dest": "mood"},
       {"trigger": "go_back", "source": ["youtube_done"], "dest": "entertainment"},
       # {"trigger": "go_back", "source": ["menu", "see_image", "state1", "state2", "youtube", "try_blockchain", "write_message", "read_message", "image"], "dest": "user"},

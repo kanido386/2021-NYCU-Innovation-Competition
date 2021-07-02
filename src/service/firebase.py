@@ -58,6 +58,22 @@ def init_db(user_id):
     db.collection('users').document(user_id).set({'test': 'test'})
 
 
+def write_to_db(user_id, key, value):
+  user_doc_ref = db.collection('users').document(user_id)
+  user_doc = user_doc_ref.get().to_dict()
+  user_doc[key] = value
+  user_doc_ref.set(user_doc)
+
+def read_from_db(user_id, key):
+  try:
+    user_doc_ref = db.collection('users').document(user_id)
+    user_doc = user_doc_ref.get().to_dict()
+    value = user_doc[key]
+  except:
+    return ""
+  return value
+
+
 def write_message(user_id, message):
   user_doc_ref = db.collection('users').document(user_id)
   user_doc = user_doc_ref.get().to_dict()

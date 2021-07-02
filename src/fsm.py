@@ -1,13 +1,14 @@
+from os import getcwd
 from transitions.extensions import GraphMachine
 import datetime
 import time
 import random
 
 from service.basic import send_text_message, push_text_message
-from service.other import send_youtube_video, get_skin_detect_result
+from service.other import send_youtube_video, get_skin_detect_result, get_foods, get_calories
 from service.blockchain import users, service_tokens
-from service.firebase import write_message, read_message, upload_skin_image, send_image, get_skin_image_url
-from service.hardcode import send_menu, send_entertainment_menu
+from service.firebase import write_message, read_message, upload_skin_image, send_image, get_skin_image_url, write_to_db, read_from_db
+from service.hardcode import send_menu, send_entertainment_menu, quick_reply_mood_grade, quick_reply_sleeping, quick_reply_skin, push_health_report, quick_reply_food
 from service.word_cloud import word_cloud
 
 class TocMachine(GraphMachine):
@@ -15,13 +16,23 @@ class TocMachine(GraphMachine):
     self.machine = GraphMachine(model=self, **machine_configs)
 
 
-  def is_going_to_menu(self, event):
-    text = event.message.text
-    return "哈囉" in text
+  # def is_going_to_menu(self, event):
+  #   if event.type == 'postback':
+  #     return "哈囉" in event.postback.data
+  #   try:
+  #     text = event.message.text # TODO:
+  #   except:
+  #     text = event.postback.data
+  #   return "哈囉" in text
 
 
   def is_going_to_mood(self, event):
-    text = event.message.text
+    if event.type == 'postback':
+      return event.postback.data == "share mood"
+    try:
+      text = event.message.text # TODO:
+    except:
+      text = event.postback.data
     return text.lower() == "share mood"
 
   def is_going_to_mood_detailed(self, event):
@@ -32,13 +43,19 @@ class TocMachine(GraphMachine):
 
 
   def is_going_to_meal(self, event):
-    text = event.message.text
+    if event.type == 'postback':
+      return event.postback.data == "record meal"
+    try:
+      text = event.message.text # TODO:
+    except:
+      text = event.postback.data
     return text.lower() == "record meal"
 
   def is_going_to_meal_search(self, event):
     return True
 
   def is_going_to_meal_report(self, event):
+    # return event.type == 'postback'
     return True
 
   def is_going_to_meal_input(self, event):
@@ -49,7 +66,12 @@ class TocMachine(GraphMachine):
 
 
   def is_going_to_diary(self, event):
-    text = event.message.text
+    if event.type == 'postback':
+      return event.postback.data == "share diary"
+    try:
+      text = event.message.text # TODO:
+    except:
+      text = event.postback.data
     return text.lower() == "share diary"
 
   def is_going_to_diary_done(self, event):
@@ -57,7 +79,12 @@ class TocMachine(GraphMachine):
 
 
   def is_going_to_exercise(self, event):
-    text = event.message.text
+    if event.type == 'postback':
+      return event.postback.data == "record exercise"
+    try:
+      text = event.message.text # TODO:
+    except:
+      text = event.postback.data
     return text.lower() == "record exercise"
 
   def is_going_to_exercise_done(self, event):
@@ -65,7 +92,12 @@ class TocMachine(GraphMachine):
 
 
   def is_going_to_sleeping(self, event):
-    text = event.message.text
+    if event.type == 'postback':
+      return event.postback.data == "record sleeping"
+    try:
+      text = event.message.text # TODO:
+    except:
+      text = event.postback.data
     return text.lower() == "record sleeping"
 
   def is_going_to_sleeping_up(self, event):
@@ -76,7 +108,12 @@ class TocMachine(GraphMachine):
 
   
   def is_going_to_skin(self, event):
-    text = event.message.text
+    if event.type == 'postback':
+      return event.postback.data == "skin"
+    try:
+      text = event.message.text # TODO:
+    except:
+      text = event.postback.data
     return text.lower() == "skin"
 
   def is_going_to_skin_process(self, event):
@@ -87,35 +124,64 @@ class TocMachine(GraphMachine):
 
 
   def is_going_to_report(self, event):
-    text = event.message.text
+    if event.type == 'postback':
+      return event.postback.data == "report"
+    try:
+      text = event.message.text # TODO:
+    except:
+      text = event.postback.data
     return text.lower() == "report"
 
 
   def is_going_to_entertainment(self, event):
-    text = event.message.text
+    if event.type == 'postback':
+      return event.postback.data == "entertainment"
+    try:
+      text = event.message.text # TODO:
+    except:
+      text = event.postback.data
     return text.lower() == "entertainment"
 
   def is_going_to_exit(self, event):
-    text = event.message.text
-    return "離開" in text
+    try:
+      text = event.message.text # TODO:
+    except:
+      text = event.postback.data
+    user_id = event.source.user_id
+    # push_text_message(user_id, "Back to the lobby!")
+    return "Exit" in text
 
 
   def is_going_to_youtube(self, event):
-    text = event.message.text
+    if event.type == 'postback':
+      return event.postback.data == "youtube"
+    try:
+      text = event.message.text # TODO:
+    except:
+      text = event.postback.data
     return text.lower() == "youtube"
 
   def is_going_to_youtube_exit(self, event):
     # go to entertainment
-    text = event.message.text
-    return "離開" in text
+    try:
+      text = event.message.text # TODO:
+    except:
+      text = event.postback.data
+    return "Exit" in text
 
   def is_going_to_youtube_ing(self, event):
-    text = event.message.text
-    return "聽" in text
+    try:
+      text = event.message.text # TODO:
+    except:
+      text = event.postback.data
+    return "Listen to" in text
 
   def is_going_to_youtube_done(self, event):
-    text = event.message.text
-    return "離開" in text
+    try:
+      text = event.message.text # TODO:
+    except:
+      text = event.postback.data
+    return "Exit" in text
   
   
   # def is_going_to_state1(self, event):
@@ -156,20 +222,24 @@ class TocMachine(GraphMachine):
 
   # ==================================================
 
-  def on_enter_menu(self, event):
-    print("I'm entering menu")
+  # def on_enter_menu(self, event):
+  #   print("I'm entering menu")
 
-    user_id = event.source.user_id
-    time.sleep(2)
-    send_menu(user_id)
-    self.go_back()
+  #   user_id = event.source.user_id
+  #   time.sleep(2)
+  #   # TODO:
+  #   send_menu(user_id, 1)
+  #   self.go_back()
 
 
   def on_enter_mood(self, event):
     print("I'm entering mood")
 
-    reply_token = event.reply_token
-    send_text_message(reply_token, "1~10 你打幾分呢？")
+    # reply_token = event.reply_token
+    # send_text_message(reply_token, "1~10 你打幾分呢？")
+    user_id = event.source.user_id
+    time.sleep(1)
+    quick_reply_mood_grade(user_id)
 
 
   def on_enter_mood_detailed(self, event):
@@ -177,7 +247,10 @@ class TocMachine(GraphMachine):
 
     user_id = event.source.user_id
     reply_token = event.reply_token
-    text = event.message.text
+    try:
+      text = event.message.text # TODO:
+    except:
+      text = event.postback.data
 
     now = datetime.datetime.now()
     today = f'{now.year}-{now.month}-{now.day}'
@@ -185,11 +258,16 @@ class TocMachine(GraphMachine):
     try:
       score = int(text)
     except:
-      send_text_message(reply_token, "請輸入數字 1~10 哦～")
+      # send_text_message(reply_token, "請輸入數字 1~10 哦～")
       # TODO: would have bug
       self.go_back(event)
 
-    # TODO: 存心情分數
+    # 存心情分數
+    mood_grade = read_from_db(user_id, 'mood_grade')
+    # TODO: 用 =x30 
+    mood_grade += f'=============================={score}'
+    write_to_db(user_id, 'mood_grade', mood_grade)
+
     if score >= 1 and score <= 5:
       # save_to_db(user_id, 'mood', {today: score}, 'dict')
       # value = load_from_db(user_id, 'mood')
@@ -197,11 +275,11 @@ class TocMachine(GraphMachine):
       # print(value)
       # print(type(value))
       # print('==============================')
-      send_text_message(reply_token, "怎麼了？")
+      send_text_message(reply_token, "What's happening?")
     elif score >= 6 and score <= 10:
-      send_text_message(reply_token, "是什麼讓您心情好？")
+      send_text_message(reply_token, "What makes you feel good?")
     else:
-      send_text_message(reply_token, "請輸入數字 1~10 哦～")
+      send_text_message(reply_token, "Please enter the numbers 1~10")
       # TODO: would have bug
       self.go_back(event)
 
@@ -210,8 +288,20 @@ class TocMachine(GraphMachine):
     print("I'm entering mood_done")
 
     reply_token = event.reply_token
-    # TODO: 存詳細＆獲得健康幣
-    send_text_message(reply_token, "了解了！")
+
+    # 存詳細
+    user_id = event.source.user_id
+    try:
+      text = event.message.text # TODO:
+    except:
+      text = event.postback.data
+    mood_detail = read_from_db(user_id, 'mood_detail')
+    # TODO: 用 =x30 
+    mood_detail += f'=============================={text}'
+    write_to_db(user_id, 'mood_detail', mood_detail)
+    
+    # TODO: 獲得健康幣
+    send_text_message(reply_token, "Got it!")
     self.go_back(event)
 
 
@@ -220,27 +310,41 @@ class TocMachine(GraphMachine):
     print("I'm entering meal")
 
     reply_token = event.reply_token
-    send_text_message(reply_token, "請輸入食物名稱")
+    send_text_message(reply_token, "Please enter the name of the food")
 
 
   def on_enter_meal_search(self, event):
     print("I'm entering meal_search")
 
-    text = event.message.text
-    # TODO: 從食物資料庫裡面找食物
-    if text == 'yes':
-      self.yes(event)
-    else:
-      self.no(event)
+    try:
+      text = event.message.text # TODO:
+    except:
+      text = event.postback.data
+    # 從食物資料庫裡面找推薦食物清單
+    # {"food": "草莓果醬", "option": 1}
+    foods = get_foods(text)
+    a, b, c, d, e, f, g, h, i, j = foods
+    user_id = event.source.user_id
+    quick_reply_food(user_id, a, b, c, d, e, f, g, h, i, j)
+    # TODO:
+    # self.yes(event)
+    # if text == 'yes':
+    #   self.yes(event)
+    # else:
+    #   self.no(event)
 
   def on_enter_meal_report(self, event):
     print("I'm entering meal_report")
 
     reply_token = event.reply_token
     # TODO: 存資料庫
-    # TODO: 回報卡路里
-    calories = 100
-    send_text_message(reply_token, f'食物熱量 {calories} 大卡')
+    # 回報卡路里
+    try:
+      food = event.message.text # TODO:
+    except:
+      food = event.postback.data
+    calories = get_calories(food)
+    send_text_message(reply_token, f'Food calories: {calories} Kcal')
     self.go_back(event)
 
 
@@ -248,7 +352,7 @@ class TocMachine(GraphMachine):
     print("I'm entering meal_input")
 
     reply_token = event.reply_token
-    send_text_message(reply_token, "請您輸入食物相關資訊")
+    send_text_message(reply_token, "Please enter food related information")
 
   # def is_going_to_read_message(self, event):
   #   text = event.message.text
@@ -261,7 +365,8 @@ class TocMachine(GraphMachine):
     # TODO: 存資料庫
     # TODO: 獲得健康幣
     amount = 5
-    send_text_message(reply_token, f'感謝您的回饋，送您 {amount} 枚健康幣～')
+    # send_text_message(reply_token, f'感謝您的回饋，送您 {amount} 枚健康幣～')
+    send_text_message(reply_token, f'Thanks for your feedback!')
     self.go_back(event)
 
 
@@ -274,7 +379,7 @@ class TocMachine(GraphMachine):
     print("I'm entering diary")
 
     reply_token = event.reply_token
-    send_text_message(reply_token, "和我分享吧！")
+    send_text_message(reply_token, "Share with me!")
 
   
   def on_enter_diary_done(self, event):
@@ -284,13 +389,27 @@ class TocMachine(GraphMachine):
     
     # 產生文字雲
     user_id = event.source.user_id
-    text = event.message.text
+    try:
+      text = event.message.text # TODO:
+    except:
+      text = event.postback.data
     word_cloud(user_id, text)
 
-    # TODO: 存資料庫
+    # 存資料庫
+    diary = read_from_db(user_id, 'diary')
+    # print('==============================')
+    # print(diary)
+    # print('==============================')
+    # TODO: 用 =x30 
+    diary += f'=============================={text}'
+    write_to_db(user_id, 'diary', diary)
+    
+
+
     # TODO: 獲得健康幣（或許可以根據字數來決定數量）
     amount = 5
-    send_text_message(reply_token, f'謝謝您的分享，送您 {amount} 枚健康幣～')
+    # send_text_message(reply_token, f'謝謝您的分享，送您 {amount} 枚健康幣～')
+    send_text_message(reply_token, f'Thanks for your sharing!')
     self.go_back(event)
 
 
@@ -299,17 +418,30 @@ class TocMachine(GraphMachine):
     print("I'm entering exercise")
 
     reply_token = event.reply_token
-    send_text_message(reply_token, "告訴我您剛剛做了什麼運動吧！")
+    send_text_message(reply_token, "Nice~ Tell me what exercise you just did")
 
   
   def on_enter_exercise_done(self, event):
     print("I'm entering exercise_done")
 
     reply_token = event.reply_token
-    # TODO: 存資料庫
+
+    # 存資料庫
+    user_id = event.source.user_id
+    try:
+      text = event.message.text # TODO:
+    except:
+      text = event.postback.data
+    exercise = read_from_db(user_id, 'exercise')
+    # TODO: 用 =x30 
+    exercise += f'=============================={text}'
+    write_to_db(user_id, 'exercise', exercise)
+
+
     # TODO: 獲得健康幣
     amount = 5
-    send_text_message(reply_token, f'運動身體好，送您 {amount} 枚健康幣～')
+    # send_text_message(reply_token, f'運動身體好，送您 {amount} 枚健康幣～')
+    send_text_message(reply_token, f'Sports is good for health!')
     self.go_back(event)
 
 
@@ -318,25 +450,67 @@ class TocMachine(GraphMachine):
     print("I'm entering sleeping")
 
     reply_token = event.reply_token
-    send_text_message(reply_token, "昨晚幾點睡呢？")
+    user_id = event.source.user_id
+    # TODO:
+    # push_text_message(user_id, "輸入格式：\n24小時制 hh:mm")
+    # send_text_message(reply_token, "昨晚幾點睡呢？")
+    quick_reply_sleeping(user_id, 'sleep')
+
 
 
   def on_enter_sleeping_up(self, event):
     print("I'm entering sleeping_up")
 
-    reply_token = event.reply_token
-    # TODO: 存資料庫
-    send_text_message(reply_token, "今天幾點幾床？")
+    # 存資料庫
+    user_id = event.source.user_id
+    try:
+      text = event.message.text # TODO:
+    except:
+      text = event.postback.data
+    text = event.postback.params['time']
+    print('==============================')
+    print(text)
+    print('==============================')
+    hour = int(text.split(':')[0])
+    minute = int(text.split(':')[1])
+    write_to_db(user_id, 'sleeping', (hour, minute))
+
+    # reply_token = event.reply_token
+    # send_text_message(reply_token, "今天幾點幾床？")
+    quick_reply_sleeping(user_id, 'up')
 
   
   def on_enter_sleeping_done(self, event):
     print("I'm entering sleeping_done")
 
     reply_token = event.reply_token
-    # TODO: 存資料庫
-    hour = 7
-    minute = 30
-    send_text_message(reply_token, f'您一共睡了 {hour} 小時 {minute} 分鐘。\n記得，睡眠也很重要哦！')
+    
+    # 讀資料庫
+    user_id = event.source.user_id
+    hour_night, minute_night = read_from_db(user_id, 'sleeping')
+    hour_night = hour_night - 24 if hour_night >= 18 else hour_night
+
+    try:
+      text = event.message.text # TODO:
+    except:
+      text = event.postback.data
+    print('==============================')
+    print(event.postback.params)
+    print('==============================')
+    text = event.postback.params['time']
+    hour = int(text.split(':')[0])
+    minute = int(text.split(':')[1])
+
+    minute -= minute_night
+    if minute < 0:
+      minute += 60
+      hour -= 1
+    hour -= hour_night
+
+    # 存資料庫    
+    write_to_db(user_id, 'sleeping', (hour, minute))
+    
+    send_text_message(reply_token, f'You slept {hour} hours {minute} minutes.\nRemember, Sleep is also very important!')
     self.go_back(event)
 
 
@@ -344,8 +518,10 @@ class TocMachine(GraphMachine):
   def on_enter_skin(self, event):
     print("I'm entering skin")
 
-    reply_token = event.reply_token
-    send_text_message(reply_token, "上傳圖片給我看看吧！")
+    # reply_token = event.reply_token
+    # send_text_message(reply_token, "照片傳給我看吧！")
+    user_id = event.source.user_id
+    quick_reply_skin(user_id)
 
   # # def on_exit_state1(self):
   # #   print("Leaving state1")
@@ -359,7 +535,7 @@ class TocMachine(GraphMachine):
     upload_skin_image(user_id, message_id, file_name)
 
     reply_token = event.reply_token
-    push_text_message(user_id, "照片分析中，請稍候⋯⋯")
+    push_text_message(user_id, "Photo analyzing, please wait...")
     self.advance(event)
 
   
@@ -368,20 +544,40 @@ class TocMachine(GraphMachine):
 
     reply_token = event.reply_token
 
-    # TODO: 回報預測結果
+    # 回報預測結果
     user_id = event.source.user_id
     img_url = get_skin_image_url(user_id)
-    probability, symptom_en, symptom = get_skin_detect_result(img_url)
+    probability, symptom, symptom_zh = get_skin_detect_result(img_url)
     # chance = [30, 60, 80]
     # accuracy = random.choice(chance)
     # result = '紅疹'
     probability = max(probability) * 100
     if probability < 70:
-      send_text_message(reply_token, f'照片可能不夠清楚，請再重拍一張！')
+      send_text_message(reply_token, f'The photo may not be clear enough, please take another one!')
     else:
-      send_text_message(reply_token, f'我們有 {probability:.2f}% 的信心，這可能是：\n{symptom}')
+      remind ="""This inspection is powered by computer vision
+（testing data accuracy is up to 97%）
 
-    # TODO: 存資料庫
+Can distinguish:
+
+1. actinic keratoses and intraepithelial carcinomae(Cancer)
+2. basal cell carcinoma(Cancer)
+3. benign keratosis-like lesions(Non-Cancerous)
+4. dermatofibroma(Non-Cancerous)
+5. melanocytic nevi(Non-Cancerous)
+6. pyogenic granulomas and hemorrhage(Can lead to cancer)
+7. melanoma(Cancer)
+
+these 7 symptoms
+
+Since it is not judged by a professional doctor.
+If you have any questions,
+Please further consult with medical institutions~"""
+      push_text_message(user_id, remind)
+      send_text_message(reply_token, f'I have {probability:.2f}% confidence that it might be: \n{symptom}')
+
+    # 存資料庫
+    write_to_db(user_id, 'skin_result', symptom)
     self.go_back(event)
 
 
@@ -390,8 +586,23 @@ class TocMachine(GraphMachine):
     print("I'm entering report")
 
     reply_token = event.reply_token
+    user_id = event.source.user_id
     # TODO: 健康狀況回報
-    send_text_message(reply_token, "2021.06.29 Tue.\n\n【報告內容】\n\n祝您天天健康！")
+#     year = datetime.datetime.now().year
+#     month = datetime.datetime.now().month
+#     day = datetime.datetime.now().day
+#     diaries = '\n'.join(read_from_db(user_id, 'diary').split('==============================')[1:])
+#     exercises = '\n'.join(read_from_db(user_id, 'exercise').split('==============================')[1:])
+#     mood_grades = ' - '.join(read_from_db(user_id, 'mood_grade').split('==============================')[1:])
+#     mood_details = '\n'.join(read_from_db(user_id, 'mood_detail').split('==============================')[1:])
+#     skin_result = read_from_db(user_id, 'skin_result')
+#     sleeping = read_from_db(user_id, 'sleeping')
+#     report = f"""{year}/{month}/{day}/\n\n=====\n
+# 小日記：\n\n{diaries}\n\n=====\n\n做了哪些運動：\n\n{exercises}\n\n=====\n\n心情分數：\n\n{mood_grades}\n\n心情隨筆：\n\n{mood_details}\n\n=====\n
+# 膚況：\n\n{skin_result}\n\n=====\n\n睡眠時間：\n\n{sleeping[0]} 小時 {sleeping[1]} 分鐘\n\n=====\n\n祝您天天健康！"""
+#     send_text_message(reply_token, report)
+    # TODO: flex message
+    push_health_report(user_id)
     self.go_back(event)
 
 
@@ -409,7 +620,7 @@ class TocMachine(GraphMachine):
     print("I'm entering youtube")
 
     reply_token = event.reply_token
-    send_text_message(reply_token, "使用示範：\n\n想聽盧廣仲的魚仔？\n請輸入「聽 盧廣仲 魚仔」\n\n若不聽歌了，請輸入【離開】")
+    send_text_message(reply_token, "Example:\n\nWant to listen to Bruno Mars' Grenade?\nJust Enter \"Listen to Bruno Mars Grenade\"\n\nIf you want to exit, please input \"Exit\"")
     self.advance(event)
 
 
@@ -426,7 +637,7 @@ class TocMachine(GraphMachine):
     print("I'm entering youtube_done")
 
     reply_token = event.reply_token
-    send_text_message(reply_token, "聽歌不錯吧？")
+    send_text_message(reply_token, "Listening to songs is great right?")
     self.go_back(event)
 
   # def on_enter_state1(self, event):
