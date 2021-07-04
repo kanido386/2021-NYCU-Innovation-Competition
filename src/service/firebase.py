@@ -6,7 +6,7 @@ from firebase_admin import storage
 import os
 import datetime
 
-from .basic import send_image_url
+from .basic import send_image_url, push_image_url
 
 from linebot import LineBotApi
 from linebot.models import TextSendMessage, ImageSendMessage, TemplateSendMessage, ImageCarouselColumn, ImageCarouselTemplate, ButtonsTemplate, MessageTemplateAction, URITemplateAction, ImageSendMessage, CarouselTemplate, CarouselColumn
@@ -53,6 +53,27 @@ line_bot_api = LineBotApi(access_token)
 #     # user_doc_ref.set(user_doc)
 
 
+def init_db(user_id):
+  if db.collection('users').document(user_id).get().to_dict() == None:
+    db.collection('users').document(user_id).set({'test': 'test'})
+
+
+def write_to_db(user_id, key, value):
+  user_doc_ref = db.collection('users').document(user_id)
+  user_doc = user_doc_ref.get().to_dict()
+  user_doc[key] = value
+  user_doc_ref.set(user_doc)
+
+def read_from_db(user_id, key):
+  try:
+    user_doc_ref = db.collection('users').document(user_id)
+    user_doc = user_doc_ref.get().to_dict()
+    value = user_doc[key]
+  except:
+    return ""
+  return value
+
+
 def write_message(user_id, message):
   user_doc_ref = db.collection('users').document(user_id)
   user_doc = user_doc_ref.get().to_dict()
@@ -65,6 +86,36 @@ def read_message(user_id):
   user_doc = user_doc_ref.get().to_dict()
   message = user_doc['message']
   return message
+
+
+
+def upload_wordcloud(user_id, output_file):
+  saving_path = f'{user_id}/wordcloud.png'
+  blob = bucket.blob(saving_path)
+
+  wordcloud_file = output_file
+  with open(wordcloud_file, 'rb') as wordcloud:
+    blob.upload_from_file(wordcloud)
+
+  os.remove(wordcloud_file)
+
+  user_doc_ref = db.collection('users').document(user_id)
+  user_doc = user_doc_ref.get().to_dict()
+  user_doc['wordcloud_file'] = saving_path
+  user_doc_ref.set(user_doc)
+
+
+def send_wordcloud(user_id):
+  user_doc_ref = db.collection('users').document(user_id)
+  user_doc = user_doc_ref.get().to_dict()
+  image = user_doc['wordcloud_file']
+  blob = bucket.blob(image)
+  # generate url for img
+  img_url = blob.generate_signed_url(datetime.timedelta(seconds=300), method='GET')
+  push_image_url(user_id, img_url)
+
+
+
 
 
 def upload_skin_image(user_id, message_id, file_name):
@@ -86,6 +137,15 @@ def upload_skin_image(user_id, message_id, file_name):
   user_doc = user_doc_ref.get().to_dict()
   user_doc['skin_image'] = saving_path
   user_doc_ref.set(user_doc)
+
+
+def get_skin_image_url(user_id):
+  user_doc_ref = db.collection('users').document(user_id)
+  user_doc = user_doc_ref.get().to_dict()
+  image = user_doc['skin_image']
+  blob = bucket.blob(image)
+  img_url = blob.generate_signed_url(datetime.timedelta(seconds=300), method='GET')
+  return img_url
 
 
 def send_image(user_id, reply_token):
